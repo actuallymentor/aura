@@ -1,0 +1,46 @@
+name: Build app bundles
+
+on:
+  # Trigger: on new tag push
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build apps
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Get the repo files from current commit
+      - name: Cloning repository
+        uses: actions/checkout@v1
+
+      - name: installing node 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: '13.x'
+
+      - name: Install node dependencies
+        run: |
+          echo "Node version;"
+          node --version
+          npm i
+
+      - name: Run tests
+        run: npm test
+
+      # # Building app docs: https://docs.expo.io/versions/latest/distribution/building-standalone-apps/
+      # # Read that guide first
+      # - name: Build app binaries
+      #   run: |
+      #     expo build:android
+      #     expo build:ios
+
+
+      # # See; https://docs.expo.io/versions/latest/guides/configuring-ota-updates/
+      # - name: Update live apps apps
+      #   run: |
+      #     npx expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
+      #     npx expo publish --non-interactive

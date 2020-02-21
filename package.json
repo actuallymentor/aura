@@ -1,0 +1,47 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "development=true expo start",
+    "android": "development=true expo start --android",
+    "ios": "development=true expo start --ios",
+    "web": "development=true expo start --web",
+    "eject": "expo eject",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|redux-persist-expo-securestore)"
+    ]
+  },
+  "dependencies": {
+    "@babel/core": "^7.8.4",
+    "@sentry/browser": "^5.12.4",
+    "babel-preset-expo": "~8.0.0",
+    "expo": "~36.0.2",
+    "expo-analytics-amplitude": "^8.0.0",
+    "expo-permissions": "^8.0.0",
+    "expo-secure-store": "~8.0.0",
+    "history": "^4.10.1",
+    "react": "^16.12.0",
+    "react-dom": "~16.12.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-web": "~0.12.1",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
+    "react-router-native": "^5.1.2",
+    "redux": "^4.0.5",
+    "redux-persist": "^6.0.0",
+    "redux-persist-expo-securestore": "^2.0.0",
+    "redux-promise-middleware": "^6.1.2",
+    "sentry-expo": "^2.0.1"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0",
+    "jest-expo": "^36.0.1",
+    "react-native-dotenv": "^0.2.0",
+    "react-test-renderer": "^16.12.0",
+    "redux-logger": "^3.0.6"
+  },
+  "private": true
+}
