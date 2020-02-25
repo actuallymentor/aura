@@ -1,6 +1,6 @@
 // Sentry debugging and Amplitude tracking
-import './src/modules/sentry'
-import './src/modules/amplitude'
+// import './src/modules/sentry'
+// import './src/modules/amplitude'
 
 // React
 import React from 'react'
@@ -22,7 +22,7 @@ import { Loading } from './src/components/stateless/generic'
 import { ScreenOrientation } from 'expo'
 
 // Push notifications
-import { askForPushPermissions } from './src/modules/push'
+// import { askForPushPermissions } from './src/modules/push'
 
 // ///////////////////////////////
 // Main app ( web )
@@ -37,7 +37,7 @@ export default class App extends React.Component {
 		await ScreenOrientation.unlockAsync()
 
 		// Create and store expo push token
-		await askForPushPermissions()
+		// await askForPushPermissions()
 	}
 
 
