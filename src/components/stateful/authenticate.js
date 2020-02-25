@@ -127,7 +127,7 @@ export default class Authenticate extends Component {
 
 	render( ) {
 		const { loading, token, profile, sma } = this.state
-		return <Container style={ { marginBottom: 20 } }>
+		return <Container>
 
 			{ sma && <Data sma={ sma } /> }
 

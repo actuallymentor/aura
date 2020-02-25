@@ -1,18 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 export const color = {
-	background: '#FFFFFF',
-	text: {
-		light: "#BDBDBD",
-		secondary: "#757575",
-		dark: "#212121"
-	},
+	background: 'white',
+	text: 'black',
 	primary: {
 		light: "#C5CAE9",
 		dark: "#303F9F",
 		normal: "#3F51B5"
 	},
-	accent: "#FDB441",
+	error: 'grey',
+	accent: "green",
 	divider: "#BDBDBD"
 }
 
