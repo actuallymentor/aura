@@ -85,7 +85,12 @@ export default class Authenticate extends Component {
 		
 
 		const sma = {
-			
+			day: {
+				last: week[ week.length - 1 ][ "bedtime_end" ],
+				hr: lowestHrSMA( [ week[ week.length - 1 ] ] ),
+				aHrv: avgHrvSMA( [ week[ week.length - 1 ] ] ),
+				hHrv: highestHrvSMA( [ week[ week.length - 1 ] ] )
+			},
 			week: {
 				last: week[ week.length - 1 ][ "bedtime_end" ],
 				entries: week.length,
@@ -113,7 +118,7 @@ export default class Authenticate extends Component {
 			sma: sma
 		} )
 
-		if( process.env.NODE_ENV == 'develoment' ) console.log( sma )
+		if( process.env.NODE_ENV == 'development' ) console.log( sma )
 
 	}
 
