@@ -1,8 +1,9 @@
 import React from 'react'
-import { KeyboardAvoidingView, Text } from 'react-native'
+import { KeyboardAvoidingView, Text, View, Button } from 'react-native'
 
 // Styling
 import generic from '../styles/generic'
+import { merge } from '../styles/_helpers'
 
 // Optimised react root component
 export class Component extends React.Component {
@@ -19,7 +20,7 @@ export class Component extends React.Component {
 }
 
 // General app container
-export const Container = ( { children } ) => <KeyboardAvoidingView behavior="padding" enabled style={ generic.container }>{ children }</KeyboardAvoidingView>
+export const Container = ( { children, style } ) => <KeyboardAvoidingView behavior="padding" enabled style={ merge( generic.container, style ) }>{ children }</KeyboardAvoidingView>
 
 // Loading screen
 export const Loading = ( { message } ) => <Container>

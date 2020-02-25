@@ -76,9 +76,14 @@ export const getReadiness = async ( token, span=0 ) => {
 
 export const getSleep = async ( token, span=0 ) => {
 
-	const res = await fetch( `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
+	
+	if( process.env.NODE_ENV == 'development' ) console.log( `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}` )
 
-	return res.json(  )
+
+	const res = await fetch( `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
+	const { sleep } = await res.json(  )
+	return sleep
+	
 }
 
 export const resetAuth = f => {

@@ -9,5 +9,11 @@ export default StyleSheet.create( {
 		justifyContent: 'center',
 		paddingLeft: 10,
 		paddingRight: 10
+	},
+	centerContent: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'center'
 	}
 } )
