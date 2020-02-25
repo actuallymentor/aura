@@ -36,7 +36,7 @@ export default class Authenticate extends Component {
 			try {
 				this.loadData()
 			} catch {
-				await resetAuth( )
+				await this.logout( )
 			}
 
 		}
@@ -65,7 +65,8 @@ export default class Authenticate extends Component {
 		await resetAuth( )
 		await this.updateState( {
 			token: undefined,
-			profile: undefined
+			profile: undefined,
+			sma: undefined
 		} )	
 	}
 
