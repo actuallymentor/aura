@@ -66,15 +66,11 @@ const Row = ( { data, property, lowerIsBetter } ) => <View>
 	</View>
 </View>
 
-export const Data = ( { sma } ) => {
+export const DetailedData = ( { sma } ) => {
 
 	const brStyle = merge( dataStyle, { borderRightColor: 'black', borderRightWidth: 2 } )
 
 	return <View style={ merge( generic.centerContent, { flex: 1 } ) }>
-
-		<Text style={ { textAlign: 'center', fontSize: 20 } }>Oura moving averages</Text>
-
-		<Text style={ { textAlign: 'center', marginBottom: 10 } }>Last data point: { relativeTime( sma.week.last ) }</Text>
 
 		<Head />
 		<View style={ merge( generic.centerContent, { flexDirection: 'row' } ) }>
@@ -89,6 +85,8 @@ export const Data = ( { sma } ) => {
 				<Row title='lHr:' data={ sma } property='hr' lowerIsBetter={ true } />
 			</View>
 		</View>
+
+		<Text style={ { textAlign: 'center', marginBottom: 10 } }>Last data point: { relativeTime( sma.week.last ) }</Text>
 
 	</View>
 

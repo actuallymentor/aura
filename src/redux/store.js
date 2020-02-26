@@ -10,8 +10,11 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from './storage'
 
 // Reducers
+import ouraReducer from './reducers/oura'
+
+// Reducers
 const reducers = combineReducers( { 
-	reducer: ( state=true, action ) => state
+	oura: ouraReducer
 } )
 
 // Root reducer

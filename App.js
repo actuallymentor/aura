@@ -33,8 +33,8 @@ export default class App extends React.Component {
 	async componentDidMount() {
 
 		// Put upside down if developing
-		// if( process.env.NODE_ENV == 'development' ) await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
-		// await ScreenOrientation.unlockAsync()
+		if( process.env.NODE_ENV == 'development' ) await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
+		await ScreenOrientation.unlockAsync()
 
 		// Create and store expo push token
 		// await askForPushPermissions()

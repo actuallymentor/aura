@@ -3,6 +3,7 @@ import { AuthSession } from 'expo'
 import * as SecureStore from 'expo-secure-store'
 import { OURA_CLIENTID, OURA_SECRET } from 'react-native-dotenv'
 import daysago from './dates'
+import { lowestHrSMA, avgHrvSMA, highestHrvSMA } from './sma'
 
 const options = {
 	urls: {
@@ -91,4 +92,46 @@ export const resetAuth = f => {
 		SecureStore.deleteItemAsync( 'oura_access_token' ),
 		SecureStore.deleteItemAsync( 'oura_auth_token' )
 	] )
+}
+
+export const getSMAs = async token => {
+
+	const week = await getSleep( token, 7 )
+	const month = await getSleep( token, 30 )
+	const semiannum = await getSleep( token, 180 )
+	
+
+	const sma = {
+		day: {
+			last: week[ week.length - 1 ][ "bedtime_end" ],
+			hr: lowestHrSMA( [ week[ week.length - 1 ] ] ),
+			aHrv: avgHrvSMA( [ week[ week.length - 1 ] ] ),
+			hHrv: highestHrvSMA( [ week[ week.length - 1 ] ] )
+		},
+		week: {
+			last: week[ week.length - 1 ][ "bedtime_end" ],
+			entries: week.length,
+			hr: lowestHrSMA( week ),
+			aHrv: avgHrvSMA( week ),
+			hHrv: highestHrvSMA( week )
+		},
+		month: {
+			last: month[ month.length - 1 ][ "bedtime_end" ],
+			entries: month.length,
+			hr: lowestHrSMA( month ),
+			aHrv: avgHrvSMA( month ),
+			hHrv: highestHrvSMA( month )
+		},
+		semiannum: {
+			last: semiannum[ semiannum.length - 1 ][ "bedtime_end" ],
+			entries: semiannum.length,
+			hr: lowestHrSMA( semiannum ),
+			aHrv: avgHrvSMA( semiannum ),
+			hHrv: highestHrvSMA( semiannum )
+		}
+	}
+
+	return sma
+
+
 }
