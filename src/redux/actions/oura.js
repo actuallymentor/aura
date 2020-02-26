@@ -1,8 +1,8 @@
 import { getAccessToken, getProfile as profile, getReadiness, getSleep as sleep, resetAuth, getSMAs as sma } from '../../modules/oura'
 
-export const getToken = f => ( {
+export const getToken = forceAuth => ( {
 	type: 'GETTOKEN',
-	payload: getAccessToken( )
+	payload: getAccessToken( forceAuth )
 } )
 
 export const getProfile = token => ( {

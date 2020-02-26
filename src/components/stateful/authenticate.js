@@ -17,6 +17,8 @@ class OuraProfile extends Component {
 			loading: true
 		}
 
+		this.getData = this.getData.bind( this )
+
 	}
 
 	// Load token from storage
@@ -28,27 +30,36 @@ class OuraProfile extends Component {
 
 		const { token } = this.props
 
-		if( token ) await Promise.all( [
+		if( token ) await this.getData( token )
+
+		if( !token ) await dispatch( reset() )
+		
+		await this.updateState( { loading: false } )
+	}
+
+	async componentDidUpdate( ) {
+		const { token, sma, dispatch } = this.props
+		if( token && !sma ) await this.getData( token )
+	}
+
+	async getData( token ) {
+		const { dispatch } = this.props
+		await Promise.all( [
 			dispatch( getSMAs( token ) ),
 			dispatch( getProfile( token ) )
 		] )
-
-		if( !token ) await dispatch( reset() )
-
-		
-		await this.updateState( { loading: false } )
 	}
 
 
 	render( ) {
 		const { loading, detailed } = this.state
-		const { token, profile, sma } = this.props
+		const { token, profile, sma, dispatch } = this.props
 
 		return <Container>
 
-			{ !detailed && sma && <DetailedData sma={ sma } /> }
+			{ !loading && !detailed && sma && <DetailedData sma={ sma } /> }
 
-			<Profile profile={ profile } loading={ loading } token={ token } auth={ this.authorize } logout={ this.logout } />
+			<Profile profile={ profile } loading={ loading } token={ token } auth={ f => dispatch( getToken( true ) ) } logout={ f => dispatch( reset() ) } />
 
 		</Container>
 	}

@@ -19,22 +19,27 @@ const relativeTime = time => {
 
 }
 
-export const Profile = ( { profile, loading, token, style, author, auth, logout } ) => <View style={ merge( style ) }>
-	
-	{ profile && <Text>User: { profile.email }</Text> }
-	{ loading && <Text>Loading...</Text> }
-	{ token && !profile && <Text>Checking connection to oura...</Text> }
-	{ !token && <View>
-		<Text>You have not yet authorised Oura access</Text>
-		<View style={ { marginTop: 20 } }>
-			<Button title='Click here to authorize' onPress={ auth } />
-		</View>
-	</View> }
-	{  profile && <View style={ { marginTop: 20, marginBottom: 20 } }>
-		<Button color={ color.accent } title='Log out' onPress={ logout } />
-	</View> }
+export const Profile = ( { profile, loading, token, style, author, auth, logout } ) => {
 
-</View>
+	if( loading ) return <View style={ merge( style ) }><Text>Loading...</Text></View>
+
+	return <View style={ merge( style ) }>
+	
+		{ profile && <Text>User: { profile.email }</Text> }
+		{ token && !profile && <Text>Checking connection to oura...</Text> }
+		{ !token && <View>
+			<Text>You have not yet authorised Oura access</Text>
+			<View style={ { marginTop: 20 } }>
+				<Button title='Click here to authorize' onPress={ auth } />
+			</View>
+		</View> }
+		{  profile && <View style={ { marginTop: 20, marginBottom: 20 } }>
+			<Button color={ color.accent } title='Log out' onPress={ logout } />
+		</View> }
+
+	</View>
+
+}
 
 const dataStyle = { margin: 10, padding: 10, minWidth: 50, textAlign: 'center' }
 const relativeStyle = ( week, today, lowerIsBetter=false ) => {
