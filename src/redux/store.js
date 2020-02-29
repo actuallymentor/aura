@@ -11,10 +11,12 @@ import storage from './storage'
 
 // Reducers
 import ouraReducer from './reducers/oura'
+import settingsReducer from './reducers/settings'
 
 // Reducers
 const reducers = combineReducers( { 
-	oura: ouraReducer
+	oura: ouraReducer,
+	settings: settingsReducer
 } )
 
 // Root reducer

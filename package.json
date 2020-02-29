@@ -18,6 +18,7 @@
     "@babel/core": "^7.8.4",
     "@sentry/browser": "^5.12.4",
     "babel-preset-expo": "~8.0.0",
+    "color": "^3.1.2",
     "expo": "~36.0.2",
     "expo-analytics-amplitude": "^8.0.0",
     "expo-permissions": "^8.0.0",

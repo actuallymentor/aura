@@ -8,8 +8,9 @@ export const color = {
 		dark: "#303F9F",
 		normal: "#3F51B5"
 	},
-	error: 'grey',
-	accent: "green",
+	error: 'red',
+	accent: 'green',
+	neutral: 'grey',
 	divider: "#BDBDBD"
 }
 

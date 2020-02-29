@@ -7,7 +7,7 @@ import { Component } from '../components/stateless/generic'
 import { Switch, Route, AppRouter } from './router'
 
 // DEMO COMPONENT
-import Authenticate from '../components/stateful/authenticate'
+import Profile from '../components/stateful/profile'
 
 // Route maneger class
 export default class Routes extends Component {
@@ -16,7 +16,7 @@ export default class Routes extends Component {
 
 		return <AppRouter>
 			<Switch>
-				<Route component={ Authenticate } />
+				<Route component={ Profile } />
 			</Switch>
 		</AppRouter>
 

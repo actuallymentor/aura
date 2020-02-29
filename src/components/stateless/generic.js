@@ -1,9 +1,9 @@
 import React from 'react'
-import { KeyboardAvoidingView, Text, View, Button } from 'react-native'
+import { KeyboardAvoidingView, Text as NativeText, View, Button } from 'react-native'
 
 // Styling
 import generic from '../styles/generic'
-import { merge } from '../styles/_helpers'
+import { merge, color } from '../styles/_helpers'
 
 // Optimised react root component
 export class Component extends React.Component {
@@ -24,7 +24,9 @@ export const Container = ( { children, style } ) => <KeyboardAvoidingView behavi
 
 // Loading screen
 export const Loading = ( { message } ) => <Container>
-	<Text>
+	<NativeText>
 		{ message || 'Loading' }
-	</Text>
+	</NativeText>
 </Container>
+
+export const Text = ( { children, style, onPress } ) => <NativeText onPress={ onPress } style={ merge( { color: color.text }, style ) }>{ children }</NativeText>
