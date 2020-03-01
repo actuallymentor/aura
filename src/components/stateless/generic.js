@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyboardAvoidingView, Text as NativeText, View, Button } from 'react-native'
+import { KeyboardAvoidingView, Text as NativeText, View, Button, TouchableOpacity } from 'react-native'
 
 // Styling
 import generic from '../styles/generic'
@@ -30,3 +30,12 @@ export const Loading = ( { message } ) => <Container>
 </Container>
 
 export const Text = ( { children, style, onPress } ) => <NativeText onPress={ onPress } style={ merge( { color: color.text }, style ) }>{ children }</NativeText>
+
+// export const Header = ( { onPress, detailed, fontSize=20 } ) => <TouchableOpacity
+// 	onPress={ onPress }
+// 	style={ merge( generic.centerContent, { marginTop: 50, flexDirection: 'row' } ) }
+// >
+// 	{ detailed && <Text style={ { fontSize: fontSize } }>{ '<' }</Text> }
+// 	<Text style={ { padding: 10, fontSize: fontSize } }>{ detailed ? 'Table view' : 'Dashboard' }</Text>
+// 	{ !detailed && <Text style={ { fontSize: fontSize } }>{ '>' }</Text> }
+// </TouchableOpacity>

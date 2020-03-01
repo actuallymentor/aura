@@ -1,14 +1,18 @@
 import React from 'react'
-import { Component, Container, Loading } from '../stateless/generic'
+import { Component, Container, Loading, Text } from '../stateless/generic'
 import { Authentication } from '../stateless/profile'
 import { Table } from '../stateless/data-table'
 import { Dashboard } from '../stateless/data-dashboard'
-import { Text, View, Button } from 'react-native'
+import { View, Button } from 'react-native'
 
 // Redux
 import { getToken, getSMAs, reset, getProfile } from '../../redux/actions/oura'
 import { setCompare } from '../../redux/actions/settings'
 import { connect } from 'react-redux'
+
+// Styling
+import { merge } from '../styles/_helpers'
+import generic from '../styles/generic'
 
 class OuraProfile extends Component {
 
@@ -22,6 +26,8 @@ class OuraProfile extends Component {
 
 		this.getData = this.getData.bind( this )
 		this.setBaseline = this.setBaseline.bind( this )
+		this.setNumerator = this.setNumerator.bind( this )
+		this.toggleDetail = this.toggleDetail.bind( this )
 
 	}
 
@@ -77,6 +83,33 @@ class OuraProfile extends Component {
 		return dispatch( setCompare( [ now, increments[ newBaseline ] ] ) )
 	}
 
+	setNumerator( direction ) {
+
+		const { dispatch, compare } = this.props
+
+		const increments = [ 'day', 'week', 'month', 'semiannum' ]
+		const [ now, baseline ] = compare
+
+		if( !now || !baseline ) return dispatch( setCompare( [ 'day', 'week' ] ) )
+
+		const currentIndex = increments.indexOf( now )
+
+		// Set new baseline conditionally
+		let newNumerator
+		if( direction == 'next' )
+			// Are we at the final increment? Reset to zero
+			newNumerator = increments.length - 1 == currentIndex ? 0 : currentIndex + 1
+		else
+			// Are we at the first element? Set to last element
+			newNumerator = currentIndex == 0 ? increments.length - 1 : currentIndex - 1
+
+		return dispatch( setCompare( [ increments[ newNumerator ], baseline ] ) )
+	}
+
+	toggleDetail( ) {
+		return this.updateState( { detailed: !this.state.detailed } )
+	}
+
 
 	render( ) {
 		const { loading, detailed } = this.state
@@ -85,9 +118,20 @@ class OuraProfile extends Component {
 		if( loading || !compare ) return <Loading />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
 
-		return <Container>
 
-			{ sma && ( detailed ? <Table sma={ sma } /> : <Dashboard next={ f => this.setBaseline( 'next' ) } back={ f => this.setBaseline( 'back' ) } sma={ sma } compare={ compare } /> ) }
+		// <Header detailed={ detailed } onPress={ f => this.updateState( { detailed: !detailed } ) } />
+
+
+		return <Container style={ { paddingLeft: 0, paddingRight: 0 } }>
+
+			{ sma && ( detailed ? <Table toggleDetail={ this.toggleDetail } sma={ sma } /> : <Dashboard
+				baselineNext={ f => this.setBaseline( 'next' ) }
+				baselineBack={ f => this.setBaseline( 'back' ) }
+				numeratorNext={ f => this.setNumerator( 'next' ) }
+				numeratorBack={ f => this.setNumerator( 'back' ) }
+				toggleDetail={ this.toggleDetail }
+				sma={ sma }
+				compare={ compare } /> ) }
 
 			<Authentication profile={ profile } token={ token } auth={ f => dispatch( getToken( true ) ) } logout={ f => dispatch( reset() ) } />
 

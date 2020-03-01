@@ -42,28 +42,37 @@ const NumberContext = ( { name, number, baseline, size=1, lowerBetter=false } ) 
 
 }
 
-export const Dashboard = ( { style, sma, compare, next, back } ) => {
+const DataControls = ( { next, back, current, fontSize } ) => <View style={ merge( generic.centerContent, { flexDirection: 'row' } ) }>
+	<Text onPress={ back } style={ { fontSize: fontSize, width: 1.1 * fontSize, textAlign: 'center' } }>{ '<' }</Text>
+	<Text onPress={ next } style={ { fontSize: fontSize } }>{ current }</Text>
+	<Text onPress={ next } style={ { fontSize: fontSize, width: 1.1 * fontSize, textAlign: 'center' } }>{ '>' }</Text>
+</View>
+
+export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, numeratorNext, numeratorBack, toggleDetail } ) => {
 
 	const [ now, then ] = compare
+	const headFont = 18
 
-	return <View style={ merge( generic.centerContent, { flex: 1 } ) }>
+	return <View style={ merge( generic.centerContent, { flex: 1, paddingTop: 50 }, style ) }>
 
-		<View style={ merge( generic.centerContent, { marginBottom: 50 } ) }>
-			<Text style={ { fontSize: 30 } }>Today</Text>
-			<View style={ merge( generic.centerContent, { flexDirection: 'row' } ) }>
-				<Text onPress={ back } style={ { fontSize: 20, width: 30, textAlign: 'center' } }>{ '<' }</Text>
-				<Text>{ now } vs { then }</Text>
-				<Text onPress={ next } style={ { fontSize: 20, width: 30, textAlign: 'center' } }>{ '>' }</Text>
-			</View>
+		<View style={ merge( generic.centerContent, { marginBottom: 50, flexDirection: 'row', padding: 10, flexWrap: 'wrap' } ) }>
+
+			<Text style={ { fontSize: headFont } }>Compare this</Text>
+			<DataControls fontSize={ headFont } next={ numeratorNext } back={ numeratorBack } current={ now } />
+			<Text style={ { fontSize: headFont } }>to this</Text>
+			<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
+
 		</View>
 		
 	
 		<NumberContext name='Avg HRV' number={ sma[ now ].aHrv } baseline={ sma[ then ].aHrv } size={ 15 } />
 
-		<View style={ merge( generic.centerContent ), { flexDirection: 'row', marginTop: 20 } }>
+		<View style={ merge( generic.centerContent ), { flexDirection: 'row' } }>
 			<NumberContext name='High HRV' number={ sma[ now ].hHrv } baseline={ sma[ then ].hHrv } size={ 10 } />
 			<NumberContext name='Low HR' number={ sma[ now ].hr } baseline={ sma[ then ].hr } size={ 10 } lowerBetter={ true } />
 		</View>
+
+		<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Toggle table</Text>
 
 	</View>
 

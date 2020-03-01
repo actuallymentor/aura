@@ -2,6 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Text } from './generic'
 import { merge, color } from '../styles/_helpers'
+import generic from '../styles/generic'
 
 
 // ///////////////////////////////
@@ -58,7 +59,7 @@ export const TableRow = ( { data, property, lowerIsBetter } ) => <View>
 	</View>
 </View>
 
-export const Table = ( { sma } ) => {
+export const Table = ( { sma, toggleDetail } ) => {
 
 	const brStyle = merge( dataStyle, { borderRightColor: 'black', borderRightWidth: 2 } )
 
@@ -79,6 +80,8 @@ export const Table = ( { sma } ) => {
 		</View>
 
 		<Text style={ { textAlign: 'center', marginBottom: 10 } }>Last data point: { relativeTime( sma.week.last ) }</Text>
+
+		<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Toggle dashboard</Text>
 
 	</View>
 
