@@ -1,9 +1,10 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ScrollView, RefreshControl } from 'react-native'
 import { Text } from './generic'
 import { merge, color as colors } from '../styles/_helpers'
 import generic from '../styles/generic'
 import colorConvert from 'color'
+import { relativeTime } from '../../modules/helpers'
 
 const Judgement = ( { delta, size, color } ) => {
 	delta = delta > 0 ? ( delta = `+${delta}` ) : delta
@@ -48,12 +49,16 @@ const DataControls = ( { next, back, current, fontSize } ) => <View style={ merg
 	<Text onPress={ next } style={ { fontSize: fontSize, width: 1.1 * fontSize, textAlign: 'center' } }>{ '>' }</Text>
 </View>
 
-export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, numeratorNext, numeratorBack, toggleDetail } ) => {
+export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, numeratorNext, numeratorBack, toggleDetail, onPull, syncing } ) => {
 
 	const [ now, then ] = compare
 	const headFont = 18
 
-	return <View style={ merge( generic.centerContent, { flex: 1, paddingTop: 50 }, style ) }>
+	return <ScrollView
+	contentContainerStyle={ merge( generic.centerContent, { flex: 1, paddingTop: 50 }, style ) }
+	style={ { flex: 1 } }
+	refreshControl={ <RefreshControl progressViewOffset={ 50 } title='Syncing...' refreshing={ syncing } onRefresh={ onPull } /> }
+	>
 
 		<View style={ merge( generic.centerContent, { marginBottom: 50, flexDirection: 'row', padding: 10, flexWrap: 'wrap' } ) }>
 
@@ -61,6 +66,8 @@ export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, nu
 			<DataControls fontSize={ headFont } next={ numeratorNext } back={ numeratorBack } current={ now } />
 			<Text style={ { fontSize: headFont } }>to this</Text>
 			<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
+
+			<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }</Text>
 
 		</View>
 		
@@ -74,7 +81,7 @@ export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, nu
 
 		<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Toggle table</Text>
 
-	</View>
+	</ScrollView>
 
 }
 

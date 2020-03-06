@@ -18,6 +18,7 @@ export const Authentication = ( { profile, token, style, author, auth, logout } 
 			<Button title='Click here to authorize Oura' onPress={ auth } />
 		</View>
 	</View> }
+
 	{  profile && <TouchableOpacity onPress={ logout } style={ { marginTop: 10, marginBottom: 20 } }>
 		<Text style={ { textAlign: 'center', textDecorationLine: 'underline' } } color={ color.accent } onPress={ logout }>Log out</Text>
 	</TouchableOpacity> }

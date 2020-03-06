@@ -28,6 +28,7 @@ class OuraProfile extends Component {
 		this.setBaseline = this.setBaseline.bind( this )
 		this.setNumerator = this.setNumerator.bind( this )
 		this.toggleDetail = this.toggleDetail.bind( this )
+		this.sync = this.sync.bind( this )
 
 	}
 
@@ -110,9 +111,27 @@ class OuraProfile extends Component {
 		return this.updateState( { detailed: !this.state.detailed } )
 	}
 
+	async sync( ) {
+
+		const wait = time => new Promise( res => setTimeout( res, time ) )
+
+		// Sync process running?
+		const { syncing } = this.state
+		if( syncing ) return 'Already syncing'
+
+		// Do the sync
+		await this.updateState( { syncing: true } )
+		const { token, sma, dispatch } = this.props
+		if( token && !sma ) await this.getData( token )
+
+		await wait( 2000 )
+		await this.updateState( { syncing: false } )
+
+	}
+
 
 	render( ) {
-		const { loading, detailed } = this.state
+		const { loading, detailed, syncing } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
 		if( loading || !compare ) return <Loading />
@@ -125,6 +144,8 @@ class OuraProfile extends Component {
 		return <Container style={ { paddingLeft: 0, paddingRight: 0 } }>
 
 			{ sma && ( detailed ? <Table toggleDetail={ this.toggleDetail } sma={ sma } /> : <Dashboard
+				onPull={ this.sync }
+				syncing={ syncing }
 				baselineNext={ f => this.setBaseline( 'next' ) }
 				baselineBack={ f => this.setBaseline( 'back' ) }
 				numeratorNext={ f => this.setNumerator( 'next' ) }

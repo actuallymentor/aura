@@ -5,22 +5,7 @@ import { merge, color } from '../styles/_helpers'
 import generic from '../styles/generic'
 
 
-// ///////////////////////////////
-// Helpers
-// ///////////////////////////////
-const relativeTime = time => {
-	const day = 1000 * 60 * 60 * 24
-	const date = new Date( time )
-	const now = new Date()
-
-	if( now - date < day ) return 'Today'
-	if( now - date < day * 2 ) return 'Yesterday'
-	if( now - date < day * 3 ) return '3 Days ago'
-
-	return date.toDateString( )
-
-
-}
+import { relativeTime } from '../../modules/helpers'
 
 // ///////////////////////////////
 // Styling
@@ -28,9 +13,11 @@ const relativeTime = time => {
 const dataStyle = { margin: 10, padding: 10, minWidth: 50, textAlign: 'center' }
 const relativeStyle = ( week, today, lowerIsBetter=false ) => {
 
-	const winning = lowerIsBetter ? ( today - week < 0 ) : ( today - week > 0 )
+	const winning = lowerIsBetter ? ( today - week <= 0 ) : ( today - week >= 0 )
 	let border = { backgroundColor: winning ? color.accent : color.error }
-	if( week == today ) border.borderColor = 'grey'
+	if( week == today ) border.backgroundColor = 'grey'
+	if( !week || !today ) border.backgroundColor = 'grey'
+	console.log( week, today )
 
 	return ( { color: 'white', ...border } )
 
@@ -64,7 +51,7 @@ export const Table = ( { sma, toggleDetail } ) => {
 	const brStyle = merge( dataStyle, { borderRightColor: 'black', borderRightWidth: 2 } )
 
 	return <View style={ merge( generic.centerContent, { flex: 1 } ) }>
-
+		<Text style={ merge( generic.centerContent, { padding: 20, textAlign: 'center' } ) }>Table compares each time period to the previous. I.e. day to week, month to semiannum.</Text>
 		<TableHead />
 		<View style={ merge( generic.centerContent, { flexDirection: 'row' } ) }>
 			<View>
