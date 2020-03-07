@@ -11,7 +11,7 @@ import { setCompare } from '../../redux/actions/settings'
 import { connect } from 'react-redux'
 
 // Helpers
-import { timeStringIsToday, timestampIsToday } from '../../modules/helpers'
+import { timeStringIsToday, timestampIsToday, wait } from '../../modules/helpers'
 
 // Styling
 import { merge } from '../styles/_helpers'
@@ -24,7 +24,9 @@ class OuraProfile extends Component {
 
 		this.state = {
 			detailed: false,
-			loading: true
+			loading: true,
+			syncError: false,
+			connectionTimeout: 5000
 		}
 
 		this.getData = this.getData.bind( this )
@@ -44,6 +46,7 @@ class OuraProfile extends Component {
 
 		const { token } = this.props
 
+		// If no token reset, otherwise get data
 		if( !token ) await dispatch( reset() )
 		else await this.getData( token )
 		
@@ -51,10 +54,12 @@ class OuraProfile extends Component {
 	}
 
 	async componentDidUpdate( ) {
+
 		const { sma, dispatch } = this.props
 
 		// Only update if there is no data
 		if( !sma ) await this.getData( token )
+			
 	}
 
 	async getData( token ) {
@@ -63,10 +68,23 @@ class OuraProfile extends Component {
 		if( !token ) return
 
 		const { dispatch } = this.props
-		await Promise.all( [
-			dispatch( getSMAs( token ) ),
-			dispatch( getProfile( token ) )
-		] )
+
+		try {
+			await Promise.race( [
+				// The timeout trigger, throws on timeout
+				wait( this.state.connectionTimeout, true ),
+				// The data getters, must outrace the timer
+				Promise.all( [
+					dispatch( getSMAs( token ) ),
+					dispatch( getProfile( token ) )
+				] )
+
+			] )
+			await this.updateState( { syncError: false } )
+		} catch( e ) {
+			alert( 'Sync error, check your connection.' )
+			await this.updateState( { syncError: true } )
+		}
 	}
 
 	setBaseline( direction ) {
@@ -121,8 +139,6 @@ class OuraProfile extends Component {
 
 	async sync( ) {
 
-		const wait = time => new Promise( res => setTimeout( res, time ) )
-
 		// Sync process running?
 		const { syncing } = this.state
 		if( syncing ) return 'Already syncing'
@@ -133,14 +149,17 @@ class OuraProfile extends Component {
 		await this.getData( token )
 
 		await wait( 1000 )
-		await this.updateState( { syncing: false } )
+		await this.updateState( { syncing: false, timeout: false, loading: false } )
+
 
 	}
 
 
 	render( ) {
-		const { loading, detailed, syncing } = this.state
+		const { loading, detailed, syncing, syncError } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
+
+		if( !sma && syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
 
 		if( loading || !compare ) return <Loading />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
