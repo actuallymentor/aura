@@ -4,7 +4,7 @@ import { Text } from './generic'
 import { merge, color as colors } from '../styles/_helpers'
 import generic from '../styles/generic'
 import colorConvert from 'color'
-import { relativeTime } from '../../modules/helpers'
+import { relativeTime, humanTimeFromStamp } from '../../modules/helpers'
 
 const Judgement = ( { delta, size, color } ) => {
 	delta = delta > 0 ? ( delta = `+${delta}` ) : delta
@@ -67,7 +67,7 @@ export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, nu
 			<Text style={ { fontSize: headFont } }>to this</Text>
 			<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
 
-			<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }</Text>
+			<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
 
 		</View>
 		

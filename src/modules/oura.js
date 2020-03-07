@@ -128,7 +128,8 @@ export const getSMAs = async token => {
 			hr: lowestHrSMA( semiannum ),
 			aHrv: avgHrvSMA( semiannum ),
 			hHrv: highestHrvSMA( semiannum )
-		}
+		},
+		synctimestamp: Date.now()
 	}
 
 	return sma

@@ -6,13 +6,41 @@ export const relativeTime = time => {
 	const date = new Date( time )
 	const now = new Date()
 
-	if( now - date < day ) return 'Today'
-	if( now - date < day * 2 ) return 'Yesterday'
+	if( now - date < day ) return 'today'
+	if( now - date < day * 2 ) return 'yesterday'
 	if( now - date < day * 3 ) return '3 Days ago'
 
 	return date.toDateString( )
 
-
 }
 
-export const another = false
+export const timeStringIsToday = time => {
+	
+	const day = 1000 * 60 * 60 * 24
+	const date = new Date( time )
+	const now = new Date()
+
+	return now - date < day
+}
+
+export const timestampIsToday = time => {
+	const today = new Date().setHours(0, 0, 0, 0)
+	const stampday = new Date( time ).setHours(0, 0, 0, 0)
+	return today == stampday
+}
+
+export const howLongAgo = time => {
+	const date = new Date( time )
+	const now = new Date()
+
+	const minutesDiff = Math.floor( ( now - date ) / 1000 / 60 )
+
+	if( minutesDiff < 60 ) return `${ minutesDiff } mins ago`
+	if( minutesDiff > 60 && minutesDiff < 60 * 24 ) return `${ minutesDiff / 60 } hours ago`
+	return `${ minutesDiff / 60 / 24 }days ago`
+}
+
+export const humanTimeFromStamp = time => {
+	const date = new Date( time )
+	return `${ date.getHours() }:${ date.getMinutes() }`
+}

@@ -10,6 +10,9 @@ import { getToken, getSMAs, reset, getProfile } from '../../redux/actions/oura'
 import { setCompare } from '../../redux/actions/settings'
 import { connect } from 'react-redux'
 
+// Helpers
+import { timeStringIsToday, timestampIsToday } from '../../modules/helpers'
+
 // Styling
 import { merge } from '../styles/_helpers'
 import generic from '../styles/generic'
@@ -41,19 +44,24 @@ class OuraProfile extends Component {
 
 		const { token } = this.props
 
-		if( token ) await this.getData( token )
-
 		if( !token ) await dispatch( reset() )
+		else await this.getData( token )
 		
 		await this.updateState( { loading: false } )
 	}
 
 	async componentDidUpdate( ) {
-		const { token, sma, dispatch } = this.props
-		if( token && !sma ) await this.getData( token )
+		const { sma, dispatch } = this.props
+
+		// Only update if there is no data
+		if( !sma ) await this.getData( token )
 	}
 
 	async getData( token ) {
+
+		// No token? Stop
+		if( !token ) return
+
 		const { dispatch } = this.props
 		await Promise.all( [
 			dispatch( getSMAs( token ) ),
@@ -121,10 +129,10 @@ class OuraProfile extends Component {
 
 		// Do the sync
 		await this.updateState( { syncing: true } )
-		const { token, sma, dispatch } = this.props
-		if( token && !sma ) await this.getData( token )
+		const { token, sma } = this.props
+		await this.getData( token )
 
-		await wait( 2000 )
+		await wait( 1000 )
 		await this.updateState( { syncing: false } )
 
 	}
@@ -136,9 +144,6 @@ class OuraProfile extends Component {
 
 		if( loading || !compare ) return <Loading />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
-
-
-		// <Header detailed={ detailed } onPress={ f => this.updateState( { detailed: !detailed } ) } />
 
 
 		return <Container style={ { paddingLeft: 0, paddingRight: 0 } }>
