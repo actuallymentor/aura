@@ -44,7 +44,7 @@ export const humanTimeFromStamp = time => {
 	const date = new Date( time )
 	const hours = date.getHours()
 	const minutes = date.getMinutes()
-	return `${ hours }:${ minutes < 9 && minutes != 0 ? `0${ minutes }` : minutes }`
+	return `${ hours }:${ minutes < 9 || minutes == 0 ? `0${ minutes }` : minutes }`
 }
 
 export const wait = ( time, error=false ) => new Promise( ( res, rej ) => setTimeout( error ? rej : res, time ) )
