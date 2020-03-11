@@ -55,7 +55,7 @@ class OuraProfile extends Component {
 
 	async componentDidUpdate( ) {
 
-		const { sma, dispatch } = this.props
+		const { sma, dispatch, token } = this.props
 
 		// Only update if there is no data
 		if( !sma ) await this.getData( token )
