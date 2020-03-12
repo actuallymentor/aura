@@ -1,8 +1,11 @@
 import * as Sentry from 'sentry-expo'
 import { SENTRY_DSN } from 'react-native-dotenv'
 
-if( SENTRY_DSN && process.env.NODE_ENV != 'development' ) Sentry.init( {
-  dsn: SENTRY_DSN
-} )
+const SentryInit = f => {
+	if( SENTRY_DSN ) Sentry.init( {
+	  dsn: SENTRY_DSN,
+	  enableInExpoDevelopment: true
+	} )
+}
 
-export default Sentry
+export default SentryInit
