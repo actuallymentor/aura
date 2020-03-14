@@ -3,7 +3,7 @@ name: Deploy expo updates
 on:
   # Trigger: on new tag push
   push:
-      branches:
+    branches:
       - master
     paths:
       - 'src/**'
