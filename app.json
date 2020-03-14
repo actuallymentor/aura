@@ -34,6 +34,13 @@
       "versionCode": 1,
       "permissions" : []
     },
-    "scheme": "ouratrenddashboard"
+    "scheme": "ouratrenddashboard",
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+        }
+      ]
+    }
   }
 }
