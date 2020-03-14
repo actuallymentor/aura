@@ -7,6 +7,9 @@ on:
       - master
     paths:
       - 'src/**'
+      - '*.json'
+      - '*.js'
+      - '.github/**'
 
 jobs:
   build:
@@ -24,29 +27,16 @@ jobs:
         with:
           node-version: '13.x'
 
-      - name: Install node dependencies
-        run: |
-          echo "Node version;"
-          node --version
-          npm i
-
-      # - name: Run tests
-      #   run: npm test
-
-      # # Building app docs: https://docs.expo.io/versions/latest/distribution/building-standalone-apps/
-      # # Read that guide first
-      # - name: Build app binaries
-      #   run: |
-      #     expo build:android
-      #     expo build:ios
-
 
       - uses: expo/expo-github-action@v5
         with:
           expo-version: 3.x
           expo-username: ${{ secrets.EXPO_USERNAME }}
           expo-password: ${{ secrets.EXPO_PASSWORD }}
+
+          
       - name: Publish
         run: |
+          echo ${{ secrets.DOTENV }} >> .env
           npm i
           expo publish
