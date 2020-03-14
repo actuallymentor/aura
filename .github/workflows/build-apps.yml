@@ -34,9 +34,10 @@ jobs:
           expo-username: ${{ secrets.EXPO_USERNAME }}
           expo-password: ${{ secrets.EXPO_PASSWORD }}
 
-          
+
       - name: Publish
         run: |
           echo ${{ secrets.DOTENV }} >> .env
+          cat .env
           npm i
           expo publish
