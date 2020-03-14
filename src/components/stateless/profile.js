@@ -25,4 +25,5 @@ export const Authentication = ( { profile, token, style, author, auth, logout } 
 
 </View>
 
+
 export const another = true
