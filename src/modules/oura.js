@@ -61,7 +61,7 @@ export const getAccessToken = async ( forceAuth = false ) => {
     if( type != 'success' && !params ) return undefined
 
     // Otherwise, get the token
-    const { params: { access_token: acquiredToken } } = res
+    const { access_token: acquiredToken } = params
 
 	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_access_token', acquiredToken )
 
