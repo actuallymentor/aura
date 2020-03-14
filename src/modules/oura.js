@@ -18,29 +18,29 @@ const options = {
 	apiEndpoint: 'https://api.ouraring.com'
 }
 
-export const getAuthorisation = async ( forceAuth = false ) => {
+// export const getAuthorisation = async ( forceAuth = false ) => {
 
-	// If local auth token is stored return it
-	const storedAuthToken = await SecureStore.getItemAsync( 'oura_auth_token' )
-	if( storedAuthToken || !forceAuth ) return storedAuthToken
+// 	// If local auth token is stored return it
+// 	const storedAuthToken = await SecureStore.getItemAsync( 'oura_auth_token' )
+// 	if( storedAuthToken || !forceAuth ) return storedAuthToken
 
-	// if not, obtain it
-	const { params: { code: acquiredToken } } = await AuthSession.startAsync( {
-        authUrl:
-          `${ options.urls.auth }?response_type=code` +
-          `&client_id=${ OURA_CLIENTID }` +
-          `&redirect_uri=${ options.redirectUrl }`
-      }
-    )
+// 	// if not, obtain it
+// 	const { params: { code: acquiredToken } } = await AuthSession.startAsync( {
+//         authUrl:
+//           `${ options.urls.auth }?response_type=code` +
+//           `&client_id=${ OURA_CLIENTID }` +
+//           `&redirect_uri=${ options.redirectUrl }`
+//       }
+//     )
 
 
 	
-	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_auth_token', acquiredToken )
+// 	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_auth_token', acquiredToken )
 
-	// If all went well we now have a stored token
-	return SecureStore.getItemAsync( 'oura_auth_token' )
+// 	// If all went well we now have a stored token
+// 	return SecureStore.getItemAsync( 'oura_auth_token' )
 
-}
+// }
 
 export const getAccessToken = async ( forceAuth = false ) => {
 
