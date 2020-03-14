@@ -37,7 +37,7 @@ jobs:
 
       - name: Publish
         run: |
-          echo ${{ secrets.DOTENV }} >> .env
+          echo -e "${{ secrets.DOTENV }}" > .env
           cat .env
           npm i
           expo publish
