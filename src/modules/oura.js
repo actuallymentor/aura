@@ -48,8 +48,8 @@ export const getAccessToken = async ( forceAuth = false ) => {
 	const storedToken = await SecureStore.getItemAsync( 'oura_access_token' )
 	if( storedToken || !forceAuth ) return storedToken
 
-	// if not, obtain it
-	const { params: { access_token: acquiredToken } } = await AuthSession.startAsync( {
+	// If not, obtain it
+	const { type, params } = await AuthSession.startAsync( {
         authUrl:
           `${ options.urls.auth }?response_type=token` +
           `&client_id=${ OURA_CLIENTID }` +
@@ -57,8 +57,12 @@ export const getAccessToken = async ( forceAuth = false ) => {
       }
     )
 
+	// If auth was not ok, cancel
+    if( type != 'success' && !params ) return undefined
 
-	
+    // Otherwise, get the token
+    const { params: { access_token: acquiredToken } } = res
+
 	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_access_token', acquiredToken )
 
 	// If all went well we now have a stored token
