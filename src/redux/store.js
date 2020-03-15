@@ -28,6 +28,10 @@ const metaReducer = ( state, action ) => {
 			state = undefined
 		break
 
+
+		// state = undefined
+		// return undefined
+
 	}
 
 	return reducers( state, action )

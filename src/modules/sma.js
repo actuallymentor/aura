@@ -1,26 +1,33 @@
-export const lowestHrSMA = sleepData => {
+// Based on https://www.mathsisfun.com/data/standard-deviation-formulas.html
+const SD = series => {
+	const total = series.reduce( ( acc, val ) => acc + val, 0 )
+	const mean = total / series.length
+	const squaredDistancesFromMean = series.map( nr => Math.pow( nr - mean, 2 ) )
+	const totalOfDifferences = squaredDistancesFromMean.reduce( ( acc, val ) => acc + val, 0 )
+	const meanOfDifferences = totalOfDifferences / series.length
+	return Math.sqrt( meanOfDifferences )
+}
 
-	const hr = sleepData.map( day => day[ "hr_lowest" ] )
-	const totalHr = hr.reduce( ( acc, val ) => acc + val, 0 )
+export const highestOfPropSMA = ( prop, sleepData, decimals=false ) => {
 
-	return Math.floor( totalHr / hr.length )
+	const series = sleepData.map( day => day[ prop ] ).map( nrs => Math.max( ...nrs ) )
+	const total = series.reduce( ( acc, val ) => acc + val, 0 )
+
+	if( decimals ) return Math.round( ( total / series.length ) * 100 ) / 100
+	if( !decimals ) return Math.round( total / series.length )
+
 
 }
 
-export const avgHrvSMA = sleepData => {
+!!!!!!!! Todo: use SD function and change the data dashboard and table to understand it.
 
-	const hrv = sleepData.map( day => day[ "rmssd" ] )
-	const totalHrv = hrv.reduce( ( acc, val ) => acc + val, 0 )
+export const propSMA = ( prop, sleepData, decimals=false ) => {
 
-	return Math.floor( totalHrv / hrv.length )
+	const series = sleepData.map( day => day[ prop ] )
+	const total = series.reduce( ( acc, val ) => acc + val, 0 )
 
-}
+	if( decimals ) return Math.round( ( total / series.length ) * 100 ) / 100
+	if( !decimals ) return Math.round( total / series.length )
 
-export const highestHrvSMA = sleepData => {
-
-	const highestHrvs = sleepData.map( day => day[ "rmssd_5min" ] ).map( hrvArr => Math.max( ...hrvArr ) )
-	const totalHighestHrvs = highestHrvs.reduce( ( acc, val ) => acc + val, 0 )
-
-	return Math.floor( totalHighestHrvs / highestHrvs.length )
 
 }

@@ -3,7 +3,7 @@ import { AuthSession } from 'expo'
 import * as SecureStore from 'expo-secure-store'
 import { OURA_CLIENTID, OURA_SECRET } from 'react-native-dotenv'
 import daysago from './dates'
-import { lowestHrSMA, avgHrvSMA, highestHrvSMA } from './sma'
+import { highestOfPropSMA, propSMA } from './sma'
 import * as Network from 'expo-network'
 
 const dev = process.env.NODE_ENV == 'development'
@@ -75,18 +75,17 @@ export const getProfile = async token => {
 	return res.json(  )
 }
 
-export const getReadiness = async ( token, span=0 ) => {
+// export const getReadiness = async ( token, span=0 ) => {
 
-	const res = await fetch( `${ options.apiEndpoint }/v1/readiness?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
+// 	const res = await fetch( `${ options.apiEndpoint }/v1/readiness?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
 
-	return res.json(  )
-}
+// 	return res.json()
+// }
 
 export const getSleep = async ( token, span=0 ) => {
 
 	
 	if( dev ) console.log( 'Calling ', `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}` )
-
 
 	const res = await fetch( `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
 	const { sleep } = await res.json(  )
@@ -118,30 +117,34 @@ export const getSMAs = async token => {
 		const sma = {
 			day: {
 				last: week[ week.length - 1 ][ "bedtime_end" ],
-				hr: lowestHrSMA( [ week[ week.length - 1 ] ] ),
-				aHrv: avgHrvSMA( [ week[ week.length - 1 ] ] ),
-				hHrv: highestHrvSMA( [ week[ week.length - 1 ] ] )
+				hr: propSMA( 'hr_lowest', [ week[ week.length - 1 ] ] ),
+				aHrv: propSMA( 'rmssd', [ week[ week.length - 1 ] ] ),
+				hHrv: highestOfPropSMA( 'rmssd_5min', [ week[ week.length - 1 ] ] ),
+				respiration: propSMA( 'breath_average', [ week[ week.length - 1 ] ] )
 			},
 			week: {
 				last: week[ week.length - 1 ][ "bedtime_end" ],
 				entries: week.length,
-				hr: lowestHrSMA( week ),
-				aHrv: avgHrvSMA( week ),
-				hHrv: highestHrvSMA( week )
+				hr: propSMA( 'hr_lowest', week ),
+				aHrv: propSMA( 'rmssd', week ),
+				hHrv: highestOfPropSMA( 'rmssd_5min', week ),
+				respiration: propSMA( 'breath_average', week )
 			},
 			month: {
 				last: month[ month.length - 1 ][ "bedtime_end" ],
 				entries: month.length,
-				hr: lowestHrSMA( month ),
-				aHrv: avgHrvSMA( month ),
-				hHrv: highestHrvSMA( month )
+				hr: propSMA( 'hr_lowest', month ),
+				aHrv: propSMA( 'rmssd', month ),
+				hHrv: highestOfPropSMA( 'rmssd_5min', month ),
+				respiration: propSMA( 'breath_average', month )
 			},
 			semiannum: {
 				last: semiannum[ semiannum.length - 1 ][ "bedtime_end" ],
 				entries: semiannum.length,
-				hr: lowestHrSMA( semiannum ),
-				aHrv: avgHrvSMA( semiannum ),
-				hHrv: highestHrvSMA( semiannum )
+				hr: propSMA( 'hr_lowest', semiannum ),
+				aHrv: propSMA( 'rmssd', semiannum ),
+				hHrv: highestOfPropSMA( 'rmssd_5min', semiannum ),
+				respiration: propSMA( 'breath_average', semiannum )
 			},
 			synctimestamp: Date.now()
 		}

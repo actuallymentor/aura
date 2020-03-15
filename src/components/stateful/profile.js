@@ -82,6 +82,7 @@ class OuraProfile extends Component {
 			] )
 			await this.updateState( { syncError: false } )
 		} catch( e ) {
+			console.log( e )
 			alert( 'Sync error, check your connection.' )
 			await this.updateState( { syncError: true } )
 		}
@@ -159,7 +160,7 @@ class OuraProfile extends Component {
 		const { loading, detailed, syncing, syncError } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
-		if( !sma && syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
+		if( token && !sma && syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
 
 		if( loading || !compare ) return <Loading />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
