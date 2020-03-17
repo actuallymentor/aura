@@ -33,8 +33,12 @@ export default class App extends React.Component {
 	async componentDidMount() {
 
 		// Put upside down if developing
-		if( process.env.NODE_ENV == 'development' ) await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
-		if( process.env.NODE_ENV == 'development' ) await ScreenOrientation.unlockAsync()
+		if( process.env.NODE_ENV == 'development' ) {
+			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
+			await ScreenOrientation.unlockAsync()
+		} else {
+			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT )
+		}
 		
 		SentryInit()
 		

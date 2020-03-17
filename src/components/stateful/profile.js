@@ -4,6 +4,7 @@ import { Authentication } from '../stateless/profile'
 import { Table } from '../stateless/data-table'
 import { Dashboard } from '../stateless/data-dashboard'
 import { View, Button } from 'react-native'
+import { Updates } from 'expo'
 
 // Redux
 import { getToken, getSMAs, reset, getProfile } from '../../redux/actions/oura'
@@ -76,6 +77,14 @@ class OuraProfile extends Component {
 		const { dispatch } = this.props
 
 		try {
+
+			if( process.env.NODE_ENV != 'development' ) {
+				const { isAvailable } = await Updates.checkForUpdateAsync()
+				if( isAvailable ) {
+					const { isNew } = await Updates.fetchUpdateAsync
+					if( isNew ) await Updates.reload()
+				}
+			}
 
 			// Grab external data and calculate SMAs
 			await Promise.race( [
