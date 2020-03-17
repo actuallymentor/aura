@@ -19,11 +19,9 @@ const options = {
 }
 
 // export const getAuthorisation = async ( forceAuth = false ) => {
-
 // 	// If local auth token is stored return it
 // 	const storedAuthToken = await SecureStore.getItemAsync( 'oura_auth_token' )
 // 	if( storedAuthToken || !forceAuth ) return storedAuthToken
-
 // 	// if not, obtain it
 // 	const { params: { code: acquiredToken } } = await AuthSession.startAsync( {
 //         authUrl:
@@ -32,41 +30,47 @@ const options = {
 //           `&redirect_uri=${ options.redirectUrl }`
 //       }
 //     )
-
-
-	
 // 	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_auth_token', acquiredToken )
-
 // 	// If all went well we now have a stored token
 // 	return SecureStore.getItemAsync( 'oura_auth_token' )
+// }
+// export const getReadiness = async ( token, span=0 ) => {
 
+// 	const res = await fetch( `${ options.apiEndpoint }/v1/readiness?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
+
+// 	return res.json()
 // }
 
 export const getAccessToken = async ( forceAuth = false ) => {
 
-	// If local auth token is stored return it
-	const storedToken = await SecureStore.getItemAsync( 'oura_access_token' )
-	if( storedToken || !forceAuth ) return storedToken
+	try {
+		// If local auth token is stored return it
+		const storedToken = await SecureStore.getItemAsync( 'oura_access_token' )
+		if( storedToken || !forceAuth ) return storedToken
 
-	// If not, obtain it
-	const { type, params } = await AuthSession.startAsync( {
-        authUrl:
-          `${ options.urls.auth }?response_type=token` +
-          `&client_id=${ OURA_CLIENTID }` +
-          `&redirect_uri=${ options.redirectUrl }`
-      }
-    )
+		// If not, obtain it
+		const { type, params } = await AuthSession.startAsync( {
+	        authUrl:
+	          `${ options.urls.auth }?response_type=token` +
+	          `&client_id=${ OURA_CLIENTID }` +
+	          `&redirect_uri=${ options.redirectUrl }`
+	      }
+	    )
 
-	// If auth was not ok, cancel
-    if( type != 'success' && !params ) return undefined
+		// If auth was not ok, cancel
+	    if( type != 'success' && !params ) return undefined
 
-    // Otherwise, get the token
-    const { access_token: acquiredToken } = params
+	    // Otherwise, get the token
+	    const { access_token: acquiredToken } = params
 
-	if( acquiredToken ) await SecureStore.setItemAsync( 'oura_access_token', acquiredToken )
+		if( acquiredToken ) await SecureStore.setItemAsync( 'oura_access_token', acquiredToken )
 
-	// If all went well we now have a stored token
-	return SecureStore.getItemAsync( 'oura_access_token' )
+		// If all went well we now have a stored token
+		return SecureStore.getItemAsync( 'oura_access_token' )
+	} catch( e ) {
+		// Throw to sentry
+		throw e
+	}
 
 }
 
@@ -74,13 +78,6 @@ export const getProfile = async token => {
 	const res = await fetch( `${ options.apiEndpoint }/v1/userinfo?access_token=${token}`, { method: 'GET' } )
 	return res.json(  )
 }
-
-// export const getReadiness = async ( token, span=0 ) => {
-
-// 	const res = await fetch( `${ options.apiEndpoint }/v1/readiness?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
-
-// 	return res.json()
-// }
 
 export const getSleep = async ( token, span=0 ) => {
 

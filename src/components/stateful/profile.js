@@ -31,7 +31,9 @@ class OuraProfile extends Component {
 			increments: [ 'day', 'week', 'month', 'semiannum' ],
 			normalDeviation: 1,
 			anomalies: [],
-			showAnomalies: false
+			showAnomalies: false,
+			retryAuth: false,
+			shouldSync: false
 		}
 
 		this.getData = this.getData.bind( this )
@@ -40,6 +42,7 @@ class OuraProfile extends Component {
 		this.toggleDetail = this.toggleDetail.bind( this )
 		this.sync = this.sync.bind( this )
 		this.findAnomalies = this.findAnomalies.bind( this )
+		this.authenticate = this.authenticate.bind( this )
 
 	}
 
@@ -54,22 +57,34 @@ class OuraProfile extends Component {
 
 		// If no token reset, otherwise get data
 		if( !token ) await dispatch( reset() )
-		else await this.getData( token )
+		else await this.sync( token )
 		
 		await this.updateState( { loading: false } )
 	}
 
+	async shouldComponentUpdate( nextProps, nextState ) {
+		const { token: oldToken } = this.props
+		const { token: newToken } = nextProps
+
+		if( newToken ) await this.updateState( { shouldSync: true } )
+		// Should update = yes
+		return true
+
+	}
+
 	async componentDidUpdate( ) {
 
+		const { shouldSync } = this.state
 		const { sma, dispatch, token } = this.props
 
 		// Only update if there is no data
-		if( !sma ) await this.getData( token )
-
+		if( shouldSync && token && !sma ) await this.sync( token )
 			
 	}
 
 	async getData( token ) {
+
+		console.log( 'Getdata with ', token )
 
 		// No token? Stop
 		if( !token ) return
@@ -79,7 +94,7 @@ class OuraProfile extends Component {
 		try {
 
 			if( process.env.NODE_ENV != 'development' ) {
-				const { isAvailable } = await Updates.checkForUpdateAsync()
+				const { isAvailable } = await Updates.checkForUpdateAsync().catch( e => ( { isAvailable: false } ) )
 				if( isAvailable ) {
 					const { isNew } = await Updates.fetchUpdateAsync()
 					await Dialogue( 'An update is available!', 'The app will now reload' )
@@ -106,7 +121,8 @@ class OuraProfile extends Component {
 			await this.updateState( { syncError: false } )
 
 		} catch( e ) {
-			Dialogue( 'Sync error', 'Check your connection.' )
+			console.log( e )
+			await Dialogue( 'Sync error', 'Check your connection.' )
 			await this.updateState( { syncError: true } )
 			// Throw to sentry
 			throw e
@@ -209,7 +225,6 @@ class OuraProfile extends Component {
 				baseval: baseval,
 				sd: sd
 			}
-			// `${translate( prop )}: ${ delta > 0 ? 'up' : 'down' } ${delta}% - ${ val } / ${ baseval } ± ${ sd }`
 		} )
 
 		return this.updateState( { anomalies: anomalies } )
@@ -220,7 +235,20 @@ class OuraProfile extends Component {
 		return this.updateState( { detailed: !this.state.detailed } )
 	}
 
+	async authenticate( ) {
+		const { dispatch } = this.props
+		await dispatch( reset( ) )
+		await dispatch( getToken( true ) )
+
+		const { token } = this.props
+		const { retry } = this.state
+		if( !token ) await this.updateState( { retryAuth: true } )
+		if( retry && token ) await this.updateState( { retryAuth: false } )
+	}
+
 	async sync( ) {
+
+		const { token, sma } = this.props
 
 		// Sync process running?
 		const { syncing } = this.state
@@ -228,7 +256,7 @@ class OuraProfile extends Component {
 
 		// Do the sync
 		await this.updateState( { syncing: true } )
-		const { token, sma } = this.props
+		
 		await this.getData( token )
 
 		await wait( 1000 )
@@ -239,7 +267,7 @@ class OuraProfile extends Component {
 
 
 	render( ) {
-		const { loading, detailed, syncing, syncError, anomalies, showAnomalies } = this.state
+		const { loading, detailed, syncing, syncError, anomalies, showAnomalies, retryAuth } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
 		if( token && !sma && syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
@@ -263,7 +291,7 @@ class OuraProfile extends Component {
 				showAnomalies={ showAnomalies }
 				toggleAnomalies={ f => this.updateState( { showAnomalies: !showAnomalies } ) } /> ) }
 
-			<Authentication profile={ profile } token={ token } auth={ f => dispatch( getToken( true ) ) } logout={ f => dispatch( reset() ) } />
+			<Authentication profile={ profile } token={ token } auth={ this.authenticate } retry={ retryAuth } logout={ f => dispatch( reset() ) } />
 
 		</Container>
 	}
