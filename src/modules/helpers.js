@@ -48,3 +48,19 @@ export const humanTimeFromStamp = time => {
 }
 
 export const wait = ( time, error=false ) => new Promise( ( res, rej ) => setTimeout( error ? rej : res, time ) )
+
+import { Alert } from 'react-native'
+export const Dialogue = ( title, message, options ) => new Promise( res => {
+	if( options ) options = options.map( ( { text, onPress } ) => ( {
+		text: text,
+		onPress: async f => {
+			if( onPress ) await onPress()
+			return res(  )
+		}
+	} ) )
+
+	if( !options ) options = [ { text: 'Ok', onPress: res } ]
+
+	Alert.alert( title, message, options )
+
+} )

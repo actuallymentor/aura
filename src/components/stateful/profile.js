@@ -12,7 +12,7 @@ import { setCompare } from '../../redux/actions/settings'
 import { connect } from 'react-redux'
 
 // Helpers
-import { timeStringIsToday, timestampIsToday, wait } from '../../modules/helpers'
+import { timeStringIsToday, timestampIsToday, wait, Dialogue } from '../../modules/helpers'
 
 // Styling
 import { merge } from '../styles/_helpers'
@@ -81,7 +81,8 @@ class OuraProfile extends Component {
 			if( process.env.NODE_ENV != 'development' ) {
 				const { isAvailable } = await Updates.checkForUpdateAsync()
 				if( isAvailable ) {
-					const { isNew } = await Updates.fetchUpdateAsync
+					const { isNew } = await Updates.fetchUpdateAsync()
+					await Dialogue( 'An update is available!', 'The app will now reload' )
 					if( isNew ) await Updates.reload()
 				}
 			}
@@ -105,7 +106,7 @@ class OuraProfile extends Component {
 			await this.updateState( { syncError: false } )
 
 		} catch( e ) {
-			alert( 'Sync error, check your connection.', e )
+			Dialogue( 'Sync error', 'Check your connection.' )
 			await this.updateState( { syncError: true } )
 		}
 	}
