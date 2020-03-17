@@ -108,6 +108,8 @@ class OuraProfile extends Component {
 		} catch( e ) {
 			Dialogue( 'Sync error', 'Check your connection.' )
 			await this.updateState( { syncError: true } )
+			// Throw to sentry
+			throw e
 		}
 	}
 
@@ -132,10 +134,12 @@ class OuraProfile extends Component {
 			newBaseline = currentIndex == 0 ? increments.length - 1 : currentIndex - 1
 
 		await dispatch( setCompare( [ now, increments[ newBaseline ] ] ) )
+
+		// Update anomaly registry
 		this.findAnomalies( )
 	}
 
-	setNumerator( direction ) {
+	async setNumerator( direction ) {
 
 		const { increments } = this.state
 		const { dispatch, compare } = this.props
@@ -154,7 +158,10 @@ class OuraProfile extends Component {
 			// Are we at the first element? Set to last element
 			newNumerator = currentIndex == 0 ? increments.length - 1 : currentIndex - 1
 
-		return dispatch( setCompare( [ increments[ newNumerator ], baseline ] ) )
+		await dispatch( setCompare( [ increments[ newNumerator ], baseline ] ) )
+
+		// Update anomaly registry
+		this.findAnomalies( )
 	}
 
 	findAnomalies( ) {
