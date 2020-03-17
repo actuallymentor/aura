@@ -17,7 +17,6 @@ const relativeStyle = ( week, today, lowerIsBetter=false ) => {
 	let border = { backgroundColor: winning ? color.accent : color.error }
 	if( week == today ) border.backgroundColor = 'grey'
 	if( !week || !today ) border.backgroundColor = 'grey'
-	console.log( week, today )
 
 	return ( { color: 'white', ...border } )
 
@@ -39,10 +38,10 @@ export const TableHead = ( {  } ) => {
 }
 export const TableRow = ( { data, property, lowerIsBetter } ) => <View>
 	<View style={ { display: 'flex', flexDirection: 'row' } }>
-		<Text style={ merge( dataStyle, relativeStyle( ) ) }>{ data.semiannum[ property ] }</Text>
-		<Text style={ merge( dataStyle, relativeStyle( data.semiannum[ property ], data.month[ property ], lowerIsBetter ) ) }>{ data.month[ property ] }</Text>
-		<Text style={ merge( dataStyle, relativeStyle( data.month[ property ], data.week[ property ], lowerIsBetter ) ) }>{ data.week[ property ] }</Text>
-		<Text style={ merge( dataStyle, relativeStyle( data.week[ property ], data.day[ property ], lowerIsBetter ) ) } key={ `${ property }day` }>{ data.day[ property ] }</Text>
+		<Text style={ merge( dataStyle, relativeStyle( ) ) }>{ data.semiannum[ property ].val }</Text>
+		<Text style={ merge( dataStyle, relativeStyle( data.semiannum[ property ].val, data.month[ property ].val, lowerIsBetter ) ) }>{ data.month[ property ].val }</Text>
+		<Text style={ merge( dataStyle, relativeStyle( data.month[ property ].val, data.week[ property ].val, lowerIsBetter ) ) }>{ data.week[ property ].val }</Text>
+		<Text style={ merge( dataStyle, relativeStyle( data.week[ property ].val, data.day[ property ].val, lowerIsBetter ) ) } key={ `${ property }day` }>{ data.day[ property ].val }</Text>
 	</View>
 </View>
 

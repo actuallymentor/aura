@@ -26,7 +26,11 @@ class OuraProfile extends Component {
 			detailed: false,
 			loading: true,
 			syncError: false,
-			connectionTimeout: 5000
+			connectionTimeout: 5000,
+			increments: [ 'day', 'week', 'month', 'semiannum' ],
+			normalDeviation: 1,
+			anomalies: [],
+			showAnomalies: false
 		}
 
 		this.getData = this.getData.bind( this )
@@ -34,6 +38,7 @@ class OuraProfile extends Component {
 		this.setNumerator = this.setNumerator.bind( this )
 		this.toggleDetail = this.toggleDetail.bind( this )
 		this.sync = this.sync.bind( this )
+		this.findAnomalies = this.findAnomalies.bind( this )
 
 	}
 
@@ -59,6 +64,7 @@ class OuraProfile extends Component {
 
 		// Only update if there is no data
 		if( !sma ) await this.getData( token )
+
 			
 	}
 
@@ -70,6 +76,8 @@ class OuraProfile extends Component {
 		const { dispatch } = this.props
 
 		try {
+
+			// Grab external data and calculate SMAs
 			await Promise.race( [
 				// The timeout trigger, throws on timeout
 				wait( this.state.connectionTimeout, true ),
@@ -80,15 +88,20 @@ class OuraProfile extends Component {
 				] )
 
 			] )
+
+			// If the cata came in, calculate anomalies
+			this.findAnomalies( )
+
+			// All went well? Set error to false
 			await this.updateState( { syncError: false } )
+
 		} catch( e ) {
-			console.log( e )
-			alert( 'Sync error, check your connection.' )
+			alert( 'Sync error, check your connection.', e )
 			await this.updateState( { syncError: true } )
 		}
 	}
 
-	setBaseline( direction ) {
+	async setBaseline( direction ) {
 
 		const { dispatch, compare } = this.props
 
@@ -108,14 +121,14 @@ class OuraProfile extends Component {
 			// Are we at the first element? Set to last element
 			newBaseline = currentIndex == 0 ? increments.length - 1 : currentIndex - 1
 
-		return dispatch( setCompare( [ now, increments[ newBaseline ] ] ) )
+		await dispatch( setCompare( [ now, increments[ newBaseline ] ] ) )
+		this.findAnomalies( )
 	}
 
 	setNumerator( direction ) {
 
+		const { increments } = this.state
 		const { dispatch, compare } = this.props
-
-		const increments = [ 'day', 'week', 'month', 'semiannum' ]
 		const [ now, baseline ] = compare
 
 		if( !now || !baseline ) return dispatch( setCompare( [ 'day', 'week' ] ) )
@@ -132,6 +145,58 @@ class OuraProfile extends Component {
 			newNumerator = currentIndex == 0 ? increments.length - 1 : currentIndex - 1
 
 		return dispatch( setCompare( [ increments[ newNumerator ], baseline ] ) )
+	}
+
+	findAnomalies( ) {
+
+		const { normalDeviation } = this.state
+		const { compare, sma } = this.props
+		const [ now, baseline ] = compare
+
+		// If neither exist yet
+		if( !sma || !compare ) return
+
+		const properties = Object.keys( sma[ baseline ] )
+		const anomalousProps = properties.filter( p => ( p != 'entries' && p != 'last' ) ).filter( prop => {
+
+			const { sd, val: baselineval } = sma[ baseline ][ prop ]
+
+			const { val } = sma[ now ][ prop ]
+
+			// Keep only those that are outside 1 SD
+			return val > baselineval + sd * normalDeviation || val < baselineval - sd * normalDeviation
+
+		} )
+
+		const translate = prop => {
+			const translations = {
+				hHrv: 'High HRV',
+				aHrv: 'Average HRV',
+				midpoint_time: 'Sleep midpoint',
+				hr_average: 'HR Avg',
+				temperature_delta: 'Sleep temp change',
+				breath_average: 'Respiration rate'
+			}
+			return translations[ prop ] || prop.charAt(0).toUpperCase() + prop.slice(1)
+		}
+
+		const anomalies = anomalousProps.map( prop => {
+			const { val: baseval, sd } = sma[ baseline ][ prop ]
+			const { val } = sma[ now ][ prop ]
+			const diff = val - baseval
+			const delta = Math.floor( ( diff / baseval ) * 100 )
+			return {
+				prop: translate( prop ),
+				delta: delta,
+				val: val,
+				baseval: baseval,
+				sd: sd
+			}
+			// `${translate( prop )}: ${ delta > 0 ? 'up' : 'down' } ${delta}% - ${ val } / ${ baseval } ± ${ sd }`
+		} )
+
+		return this.updateState( { anomalies: anomalies } )
+
 	}
 
 	toggleDetail( ) {
@@ -157,14 +222,13 @@ class OuraProfile extends Component {
 
 
 	render( ) {
-		const { loading, detailed, syncing, syncError } = this.state
+		const { loading, detailed, syncing, syncError, anomalies, showAnomalies } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
 		if( token && !sma && syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
 
 		if( loading || !compare ) return <Loading />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
-
 
 		return <Container style={ { paddingLeft: 0, paddingRight: 0 } }>
 
@@ -177,7 +241,10 @@ class OuraProfile extends Component {
 				numeratorBack={ f => this.setNumerator( 'back' ) }
 				toggleDetail={ this.toggleDetail }
 				sma={ sma }
-				compare={ compare } /> ) }
+				compare={ compare }
+				anomalies={ anomalies }
+				showAnomalies={ showAnomalies }
+				toggleAnomalies={ f => this.updateState( { showAnomalies: !showAnomalies } ) } /> ) }
 
 			<Authentication profile={ profile } token={ token } auth={ f => dispatch( getToken( true ) ) } logout={ f => dispatch( reset() ) } />
 

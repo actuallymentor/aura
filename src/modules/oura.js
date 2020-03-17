@@ -100,6 +100,19 @@ export const resetAuth = f => {
 	] )
 }
 
+const singleSMASet = data => ( {
+	last: data[ data.length - 1 ][ "bedtime_end" ],
+	entries: data.length,
+	hr: propSMA( 'hr_lowest', data ),
+	aHrv: propSMA( 'rmssd', data ),
+	hHrv: highestOfPropSMA( 'rmssd_5min', data ),
+	breath_average: propSMA( 'breath_average', data, true ),
+	temperature_delta: propSMA( 'temperature_delta', data, true ),
+	restlessness: propSMA( 'restless', data ),
+	hr_average: propSMA( 'hr_average', data ),
+	midpoint_time: propSMA( 'midpoint_time', data )
+} )
+
 export const getSMAs = async token => {
 
 	try {
@@ -115,37 +128,10 @@ export const getSMAs = async token => {
 		if( dev ) console.log( 'Got data from oura' )
 
 		const sma = {
-			day: {
-				last: week[ week.length - 1 ][ "bedtime_end" ],
-				hr: propSMA( 'hr_lowest', [ week[ week.length - 1 ] ] ),
-				aHrv: propSMA( 'rmssd', [ week[ week.length - 1 ] ] ),
-				hHrv: highestOfPropSMA( 'rmssd_5min', [ week[ week.length - 1 ] ] ),
-				respiration: propSMA( 'breath_average', [ week[ week.length - 1 ] ] )
-			},
-			week: {
-				last: week[ week.length - 1 ][ "bedtime_end" ],
-				entries: week.length,
-				hr: propSMA( 'hr_lowest', week ),
-				aHrv: propSMA( 'rmssd', week ),
-				hHrv: highestOfPropSMA( 'rmssd_5min', week ),
-				respiration: propSMA( 'breath_average', week )
-			},
-			month: {
-				last: month[ month.length - 1 ][ "bedtime_end" ],
-				entries: month.length,
-				hr: propSMA( 'hr_lowest', month ),
-				aHrv: propSMA( 'rmssd', month ),
-				hHrv: highestOfPropSMA( 'rmssd_5min', month ),
-				respiration: propSMA( 'breath_average', month )
-			},
-			semiannum: {
-				last: semiannum[ semiannum.length - 1 ][ "bedtime_end" ],
-				entries: semiannum.length,
-				hr: propSMA( 'hr_lowest', semiannum ),
-				aHrv: propSMA( 'rmssd', semiannum ),
-				hHrv: highestOfPropSMA( 'rmssd_5min', semiannum ),
-				respiration: propSMA( 'breath_average', semiannum )
-			},
+			day: singleSMASet( [ week[ week.length - 1 ] ] ),
+			week: singleSMASet( week ),
+			month: singleSMASet( month ),
+			semiannum: singleSMASet( semiannum ),
 			synctimestamp: Date.now()
 		}
 
