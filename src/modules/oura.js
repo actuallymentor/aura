@@ -107,7 +107,11 @@ const singleSMASet = data => ( {
 	temperature_delta: propSMA( 'temperature_delta', data, true ),
 	restlessness: propSMA( 'restless', data ),
 	hr_average: propSMA( 'hr_average', data ),
-	midpoint_time: propSMA( 'midpoint_time', data )
+	// Midpoint time: rounded to hours
+	midpoint_time: {
+		val: Math.round( propSMA( 'midpoint_time', data ).val / 60 ),
+		sd: Math.round( propSMA( 'midpoint_time', data ).sd / 60 )
+	}
 } )
 
 export const getSMAs = async token => {

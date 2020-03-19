@@ -106,9 +106,10 @@ const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.
 	</View>
 
 	<View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'row', flexWrap: 'wrap', marginVertical: 30 } ) }>
-		{ anomalies.map( ( { prop, delta, val, baseval, sd } ) => <View key={ prop } style={ merge( generic.centerContent, { width: '50%', minWidth: 180, height: 100, padding: 5 } ) }>
+		{ anomalies.map( ( { prop, delta, val, baseval, sd } ) => <View key={ prop } style={ merge( generic.centerContent, { width: '50%', minWidth: 180, height: 120, padding: 5 } ) }>
 			<View style={ merge( generic.centerContent, { borderWidth: 1, borderColor: colors.divider, padding: 10, width: '100%', height: '100%' } ) }>
-				<Text style={ { textAlign: 'center', marginBottom: 10 } }>{ prop } { val >= 0 ? 'up' : 'down' } { delta }%</Text>
+				<Text style={ { textAlign: 'center', fontSize: 20 } }>{ delta }%</Text>
+				<Text style={ { textAlign: 'center', marginBottom: 10 } }>{ prop }</Text>
 				<Text style={ { textAlign: 'center', opacity: .5 } }>{val} / ( { baseval } ± { sd } )</Text>
 			</View>
 		</View> ) }

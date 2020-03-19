@@ -204,10 +204,11 @@ class OuraProfile extends Component {
 
 		const translate = prop => {
 			const translations = {
-				hHrv: 'High HRV',
+				hHrv: 'Highest HRV',
 				aHrv: 'Average HRV',
 				midpoint_time: 'Sleep midpoint',
-				hr_average: 'HR Avg',
+				hr_average: 'Heart rate avg',
+				hr: 'Heart rate',
 				temperature_delta: 'Sleep temp change',
 				breath_average: 'Respiration rate'
 			}
