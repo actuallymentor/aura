@@ -66,7 +66,8 @@ class OuraProfile extends Component {
 		const { token: oldToken } = this.props
 		const { token: newToken } = nextProps
 
-		if( !oldToken && newToken ) await this.updateState( { shouldSync: true } )
+		// Unawaited sync trigger
+		if( !oldToken && newToken ) this.updateState( { shouldSync: true } )
 		// Should update = yes
 		return true
 

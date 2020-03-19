@@ -81,7 +81,7 @@ export const AnomalyNotification = ( { style, anomalies, toggleAnomalies, showAn
 style={ merge( generic.centerContent, { padding: 20, paddingTop: 40, width: '100%' }, style ) }
 onPress={ toggleAnomalies }>
 	{ !showAnomalies && <Text>⚠️ View { anomalies.length } { anomalies.length > 1 ? 'anomalies' : 'anomaly' }</Text> }
-	{ showAnomalies && <AnomalyList anomalies={ anomalies } /> }
+	{ showAnomalies && <AnomalySquares anomalies={ anomalies } /> }
 </TouchableOpacity>
 
 const Row = ( { data, style } ) => <View style={ merge( generic.centerContent, { flexDirection: 'row', width: '100%', justifyContent: 'space-between', marginBottom: 10 }, style ) }>
@@ -94,6 +94,29 @@ const AnomalyList = ( { style, anomalies } ) => <View style={ merge( generic.cen
 	<Row style={ { marginBottom: 20 } } data={ [ 'Variable', 'Delta ', 'Value', 'Baseline', 'SD' ] } />
 	{ anomalies.map( ( { prop, delta, val, baseval, sd } ) => <Row key={ prop } data={ [ prop, delta, val, baseval, sd ] } /> ) }
 	<Text style={ { marginTop: 20 } }>Click to return to dashboard</Text>
+</View>
+
+const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'row', flexWrap: 'wrap' } ) }>
+
+	<Text style={ { fontSize: 20 } }>Anomalies</Text>
+
+	<View style={ { padding: 20 } }>
+		<Text style={ { textAlign: 'center' } }>An anomaly is any value that falls outside of 1 standard deviation of the baseline.</Text>
+		<Text style={ { textAlign: 'center', opacity: .5, marginTop: 10 } }>Notation: comparisson value / ( baseline value ± standard deviation )</Text>
+	</View>
+
+	<View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'row', flexWrap: 'wrap', marginVertical: 30 } ) }>
+		{ anomalies.map( ( { prop, delta, val, baseval, sd } ) => <View key={ prop } style={ merge( generic.centerContent, { width: '50%', minWidth: 180, height: 100, padding: 5 } ) }>
+			<View style={ merge( generic.centerContent, { borderWidth: 1, borderColor: colors.divider, padding: 10, width: '100%', height: '100%' } ) }>
+				<Text style={ { textAlign: 'center', marginBottom: 10 } }>{ prop } { val >= 0 ? 'up' : 'down' } { delta }%</Text>
+				<Text style={ { textAlign: 'center', opacity: .5 } }>{val} / ( { baseval } ± { sd } )</Text>
+			</View>
+		</View> ) }
+	</View>
+	
+
+	<Text style={ { marginTop: 20 } }>Click to return to dashboard</Text>
+
 </View>
 
 /// ///////////////////////////////
