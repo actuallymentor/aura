@@ -197,8 +197,8 @@ class OuraProfile extends Component {
 
 			const { val } = sma[ now ][ prop ]
 
-			// Keep only those that are outside 1 SD
-			return val > baselineval + sd * normalDeviation || val < baselineval - sd * normalDeviation
+			// Keep only those that are outside 2 SD
+			return val > baselineval + ( sd * 2 ) * normalDeviation || val < baselineval - ( sd * 2 ) * normalDeviation
 
 		} )
 
