@@ -4,13 +4,12 @@
     "description": "A trend dashboard for Oura ring data.",
     "slug": "oura-trend-dashboard",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,18 +26,23 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mentorpalokaj.ouratrenddashboard",
-      "buildNumber": "1.0.0"
+      "buildNumber": "2.0.0"
     },
     "android": {
       "package": "com.mentorpalokaj.ouratrenddashboard",
-      "versionCode": 1,
-      "permissions" : []
+      "versionCode": 2,
+      "permissions": []
     },
     "scheme": "ouratrenddashboard",
     "hooks": {
       "postPublish": [
         {
           "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+  "organization": "mmoh",
+  "project": "ouratrenddashboard",
+  "authToken": "0adc1c8cdb3e462899a2ceba6bde0550c30991a80ec94c129e7fc77ef0c3d3fd"
+}
         }
       ]
     }

@@ -19,7 +19,7 @@ import Routes from './src/routes/routes'
 import { Loading } from './src/components/stateless/generic'
 
 // Rotation
-import { ScreenOrientation } from 'expo'
+import * as ScreenOrientation from 'expo-screen-orientation'
 
 // Push notifications
 // import { askForPushPermissions } from './src/modules/push'

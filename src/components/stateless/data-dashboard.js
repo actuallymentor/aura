@@ -61,7 +61,7 @@ const DataCircles = ( { headFont=18, now, then, numeratorNext, numeratorBack, ba
 		<Text style={ { fontSize: headFont } }>to this</Text>
 		<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
 
-		<Text style={ { marginTop: 20, opacity: .5 } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
+		<Text style={ { marginTop: 20, opacity: .5, width: '100%', textAlign: 'center' } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
 
 	</View>
 	
@@ -101,7 +101,7 @@ const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.
 	<Text style={ { fontSize: 20 } }>Anomalies</Text>
 
 	<View style={ { padding: 20 } }>
-		<Text style={ { textAlign: 'center' } }>An anomaly is any value that falls outside of 1 standard deviation of the baseline.</Text>
+		<Text style={ { textAlign: 'center' } }>An anomaly is any value that falls outside of 2 standard deviations of the baseline.</Text>
 		<Text style={ { textAlign: 'center', opacity: .5, marginTop: 10 } }>Notation: comparisson value / ( baseline value ± standard deviation )</Text>
 	</View>
 

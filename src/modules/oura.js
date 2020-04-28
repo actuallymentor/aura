@@ -1,5 +1,5 @@
 // Authentication module
-import { AuthSession } from 'expo'
+import * as AuthSession from 'expo-auth-session'
 import * as SecureStore from 'expo-secure-store'
 import { OURA_CLIENTID, OURA_SECRET } from 'react-native-dotenv'
 import daysago from './dates'

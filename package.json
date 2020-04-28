@@ -6,7 +6,8 @@
     "ios": "development=true expo start --ios",
     "web": "development=true expo start --web",
     "eject": "expo eject",
-    "test": "jest"
+    "compile:android": "export $(grep '^[a-zA-Z_]*=.*' .env | xargs) && expo build:android",
+    "compile:ios": "export $(grep '^[a-zA-Z_]*=.*' .env | xargs) && expo build:ios"
   },
   "jest": {
     "preset": "jest-expo",
@@ -17,17 +18,18 @@
   "dependencies": {
     "@babel/core": "^7.8.4",
     "@sentry/browser": "^5.12.4",
-    "babel-preset-expo": "~8.0.0",
+    "babel-preset-expo": "^8.1.0",
     "color": "^3.1.2",
-    "expo": "~36.0.2",
-    "expo-analytics-amplitude": "^8.0.0",
-    "expo-permissions": "^8.0.0",
-    "expo-secure-store": "~8.0.0",
+    "expo": "^37.0.0",
+    "expo-auth-session": "^1.0.0",
+    "expo-network": "~2.1.0",
+    "expo-permissions": "~8.1.0",
+    "expo-secure-store": "~8.1.0",
     "history": "^4.10.1",
-    "react": "^16.12.0",
-    "react-dom": "~16.12.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
-    "react-native-web": "~0.11",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.0.tar.gz",
+    "react-native-web": "^0.11.7",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-router-native": "^5.1.2",
@@ -36,12 +38,12 @@
     "redux-persist-expo-securestore": "^2.0.0",
     "redux-promise-middleware": "^6.1.2",
     "sentry-expo": "^2.0.1",
-    "expo-network": "~2.0.0"
+    "expo-screen-orientation": "~1.0.0"
   },
   "devDependencies": {
     "expo-cli": "^3.13.8",
     "jest": "^25.1.0",
-    "jest-expo": "^36.0.1",
+    "jest-expo": "^37.0.0",
     "react-native-dotenv": "^0.2.0",
     "react-test-renderer": "^16.12.0",
     "redux-logger": "^3.0.6"

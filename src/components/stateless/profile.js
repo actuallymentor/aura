@@ -6,7 +6,7 @@ import { merge, color } from '../styles/_helpers'
 // Visual
 import { Text } from './generic'
 
-export const Authentication = ( { profile, token, style, author, auth, logout, retry } ) => <View style={ merge( generic.centerContent, style ) }>
+export const Authentication = ( { profile, token, style, author, auth, logout, retry } ) => <View style={ merge( generic.centerContent, style, { maxWidth: 500 } ) }>
 
 	{ !token && <Text style={ { textAlign: 'center', padding: 20 } }>This app links to your Oura ring and allows you to compare today's HRV/HR scores to your averages of the past week, month or half year. The idea is to see whether you are trending up or down.</Text> }
 
