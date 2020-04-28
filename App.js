@@ -4,6 +4,7 @@ import SentryInit from './src/modules/sentry'
 
 // React
 import React from 'react'
+import { Platform } from 'react-native'
 
 // Redux
 import { Provider } from 'react-redux'
@@ -33,10 +34,12 @@ export default class App extends React.Component {
 	async componentDidMount() {
 
 		// Put upside down if developing
-		if( process.env.NODE_ENV == 'development' ) {
+		const web = Platform.OS == 'web'
+		const dev = process.env.NODE_ENV == 'development'
+		if( !web && dev ) {
 			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
 			await ScreenOrientation.unlockAsync()
-		} else {
+		} else if( !web ) {
 			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT )
 		}
 		

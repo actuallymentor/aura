@@ -292,7 +292,7 @@ class OuraProfile extends Component {
 
 		if( syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
 
-		if( loading || !compare ) return <Loading message='Loading your profile...' />
+		if( token && ( loading || !compare ) ) return <Loading message='Loading your profile...' />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
 
 		return <Container style={ { paddingLeft: 0, paddingRight: 0 } }>
