@@ -18,6 +18,9 @@ import { timeStringIsToday, timestampIsToday, wait, Dialogue } from '../../modul
 import { merge } from '../styles/_helpers'
 import generic from '../styles/generic'
 
+// Tracking
+import { pageView, event } from '../../modules/analytics'
+
 class OuraProfile extends Component {
 
 	constructor( props ) {
@@ -60,6 +63,9 @@ class OuraProfile extends Component {
 		else await this.sync( token )
 		
 		await this.updateState( { loading: false } )
+
+		// Track page view
+		pageView( 'Profile' )
 	}
 
 	async shouldComponentUpdate( nextProps, nextState ) {
@@ -152,6 +158,8 @@ class OuraProfile extends Component {
 
 		// Update anomaly registry
 		this.findAnomalies( )
+
+		event( 'settings', 'baseline', this.props.compare.baseline )
 	}
 
 	async setNumerator( direction ) {
@@ -177,6 +185,8 @@ class OuraProfile extends Component {
 
 		// Update anomaly registry
 		this.findAnomalies( )
+
+		event( 'settings', 'numerator', this.props.compare.now )
 	}
 
 	findAnomalies( ) {
@@ -267,12 +277,12 @@ class OuraProfile extends Component {
 
 	cycleDeviation = async direction => {
 		const { normalDeviation } = this.state
-		let newDeviation
 		if( direction == 'up' ) await this.updateState( { normalDeviation: normalDeviation == 3 ? 0 : normalDeviation + 1 } )
 		else await this.updateState( { normalDeviation: normalDeviation == 0 ? 3 : normalDeviation - 1 } )
 
 		// Update anomaly registry
 		this.findAnomalies( )
+		event( 'settings', 'anomalysensitivity', this.state.normalDeviation )
 	}
 
 
