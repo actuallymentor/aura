@@ -53,13 +53,18 @@ const DataControls = ( { next, back, current, fontSize } ) => <View style={ merg
 </View>
 
 
-const DataCircles = ( { headFont=18, now, then, numeratorNext, numeratorBack, baselineNext, baselineBack, toggleDetail, sma  } ) => <View style={ generic.centerContent }>
+const DataCircles = ( { headFont=18, now, then, normalDeviation, cycleDeviation, numeratorNext, numeratorBack, baselineNext, baselineBack, toggleDetail, sma  } ) => <View style={ generic.centerContent }>
 	<View style={ merge( generic.centerContent, { marginBottom: 50, flexDirection: 'row', padding: 10, flexWrap: 'wrap' } ) }>
-
 		<Text style={ { fontSize: headFont } }>Compare this</Text>
 		<DataControls fontSize={ headFont } next={ numeratorNext } back={ numeratorBack } current={ now } />
 		<Text style={ { fontSize: headFont } }>to this</Text>
 		<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
+
+		<View style={ { flexDirection: 'row', justifyContent: 'center', width: '100%', paddingVertical: 10 } }>
+			<Text style={ { fontSize: headFont } }>Anomaly sensitivity: </Text>
+			<DataControls fontSize={ headFont } next={ f => cycleDeviation( 'down' ) } back={ f => cycleDeviation( 'down' ) } current={ normalDeviation } />
+			<Text style={ { fontSize: headFont } }> standard deviations</Text>
+		</View>
 
 		<Text style={ { marginTop: 20, opacity: .5, width: '100%', textAlign: 'center' } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
 
@@ -96,7 +101,7 @@ const AnomalyList = ( { style, anomalies } ) => <View style={ merge( generic.cen
 	<Text style={ { marginTop: 20 } }>Click to return to dashboard</Text>
 </View>
 
-const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'row', flexWrap: 'wrap' } ) }>
+const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'column', flexWrap: 'wrap' } ) }>
 
 	<Text style={ { fontSize: 20 } }>Anomalies</Text>
 
@@ -105,7 +110,7 @@ const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.
 		<Text style={ { textAlign: 'center', opacity: .5, marginTop: 10 } }>Notation: comparisson value / ( baseline value ± standard deviation )</Text>
 	</View>
 
-	<View style={ merge( generic.centerContent, { width: '100%', flexDirection: 'row', flexWrap: 'wrap', marginVertical: 30 } ) }>
+	<View style={ merge( generic.centerContent, { width: '100%', justifyContent: 'flex-start', flexDirection: 'row', flexWrap: 'wrap', marginVertical: 30 } ) }>
 		{ anomalies.map( ( { prop, delta, val, baseval, sd } ) => <View key={ prop } style={ merge( generic.centerContent, { width: '50%', minWidth: 180, height: 120, padding: 5 } ) }>
 			<View style={ merge( generic.centerContent, { borderWidth: 1, borderColor: colors.divider, padding: 10, width: '100%', height: '100%' } ) }>
 				<Text style={ { textAlign: 'center', fontSize: 20 } }>{ delta }%</Text>
@@ -123,7 +128,7 @@ const AnomalySquares = ( { style, anomalies } ) => <View style={ merge( generic.
 /// ///////////////////////////////
 // Controlling dash component
 // ///////////////////////////////
-export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, numeratorNext, numeratorBack, toggleDetail, onPull, syncing, anomalies, showAnomalies, toggleAnomalies } ) => {
+export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, numeratorNext, numeratorBack, normalDeviation, cycleDeviation, toggleDetail, onPull, syncing, anomalies, showAnomalies, toggleAnomalies } ) => {
 
 	const [ now, then ] = compare
 
@@ -133,7 +138,7 @@ export const Dashboard = ( { style, sma, compare, baselineNext, baselineBack, nu
 	refreshControl={ <RefreshControl progressViewOffset={ 50 } title='Syncing...' refreshing={ syncing } onRefresh={ onPull } /> }
 	>
 
-		{ !showAnomalies && <DataCircles now={ now } then={ then } numeratorNext={ numeratorNext } numeratorBack={ numeratorBack } baselineNext={ baselineNext } baselineBack={ baselineBack } toggleDetail={ toggleDetail } sma={ sma } /> }
+		{ !showAnomalies && <DataCircles normalDeviation={ normalDeviation } cycleDeviation={ cycleDeviation } now={ now } then={ then } numeratorNext={ numeratorNext } numeratorBack={ numeratorBack } baselineNext={ baselineNext } baselineBack={ baselineBack } toggleDetail={ toggleDetail } sma={ sma } /> }
 
 		{ anomalies.length > 0 && <AnomalyNotification showAnomalies={ showAnomalies } toggleAnomalies={ toggleAnomalies } anomalies={ anomalies } /> }
 		

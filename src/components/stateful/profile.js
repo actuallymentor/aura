@@ -27,9 +27,9 @@ class OuraProfile extends Component {
 			detailed: false,
 			loading: true,
 			syncError: false,
-			connectionTimeout: 5000,
+			connectionTimeout: 15000,
 			increments: [ 'day', 'week', 'month', 'semiannum' ],
-			normalDeviation: 1,
+			normalDeviation: 2,
 			anomalies: [],
 			showAnomalies: false,
 			retryAuth: false,
@@ -84,8 +84,6 @@ class OuraProfile extends Component {
 	}
 
 	async getData( token ) {
-
-		console.log( 'Getdata with ', token )
 
 		// No token? Stop
 		if( !token ) return
@@ -198,7 +196,7 @@ class OuraProfile extends Component {
 			const { val } = sma[ now ][ prop ]
 
 			// Keep only those that are outside 2 SD
-			return val > baselineval + ( sd * 2 ) * normalDeviation || val < baselineval - ( sd * 2 ) * normalDeviation
+			return val > baselineval + ( sd * normalDeviation ) || val < baselineval - ( sd * normalDeviation )
 
 		} )
 
@@ -267,9 +265,19 @@ class OuraProfile extends Component {
 
 	}
 
+	cycleDeviation = async direction => {
+		const { normalDeviation } = this.state
+		let newDeviation
+		if( direction == 'up' ) await this.updateState( { normalDeviation: normalDeviation == 3 ? 0 : normalDeviation + 1 } )
+		else await this.updateState( { normalDeviation: normalDeviation == 0 ? 3 : normalDeviation - 1 } )
+
+		// Update anomaly registry
+		this.findAnomalies( )
+	}
+
 
 	render( ) {
-		const { loading, detailed, syncing, syncError, anomalies, showAnomalies, retryAuth } = this.state
+		const { loading, detailed, syncing, syncError, anomalies, showAnomalies, retryAuth, normalDeviation } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
 		if( syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
@@ -291,7 +299,10 @@ class OuraProfile extends Component {
 				compare={ compare }
 				anomalies={ anomalies }
 				showAnomalies={ showAnomalies }
-				toggleAnomalies={ f => this.updateState( { showAnomalies: !showAnomalies } ) } /> ) }
+				toggleAnomalies={ f => this.updateState( { showAnomalies: !showAnomalies } ) }
+				normalDeviation={ normalDeviation }
+				cycleDeviation={ this.cycleDeviation }
+			/>) }
 
 			<Authentication profile={ profile } token={ token } auth={ this.authenticate } retry={ retryAuth } logout={ f => dispatch( reset() ) } />
 
