@@ -60,7 +60,7 @@ const DataCircles = ( { headFont=18, now, then, normalDeviation, cycleDeviation,
 		<Text style={ { fontSize: headFont } }>to this</Text>
 		<DataControls fontSize={ headFont } next={ baselineNext } back={ baselineBack } current={ then } />
 
-		<View style={ { flexDirection: 'row', justifyContent: 'center', width: '100%', paddingVertical: 10 } }>
+		<View style={ { flexDirection: 'row', justifyContent: 'center', width: '100%', paddingVertical: 10, paddingHorizontal: 10, flexWrap: 'wrap' } }>
 			<Text style={ { fontSize: headFont } }>Anomaly sensitivity: </Text>
 			<DataControls fontSize={ headFont } next={ f => cycleDeviation( 'up' ) } back={ f => cycleDeviation( 'down' ) } current={ normalDeviation } />
 			<Text style={ { fontSize: headFont } }> standard deviations</Text>

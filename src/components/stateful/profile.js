@@ -127,8 +127,8 @@ class OuraProfile extends Component {
 
 		} catch( e ) {
 
-			await this.updateState( { syncError: true, loading: false } )
-			Dialogue( 'Sync error', `Error: ${e}. Check your connection.` )
+			await this.updateState( { syncError: true, loading: false, syncing: false } )
+			Dialogue( 'Sync error', `Error: ${ JSON.stringify( e ) }. Check your connection.` )
 
 			// Throw to sentry
 			throw e
@@ -264,10 +264,11 @@ class OuraProfile extends Component {
 
 		// Sync process running?
 		const { syncing } = this.state
+		console.log( 'Syncing: ', syncing )
 		if( syncing ) return 'Already syncing'
 
 		// Do the sync
-		await this.updateState( { syncing: true } )
+		await this.updateState( { syncing: true, syncError: false } )
 		
 		await this.getData( token )
 
