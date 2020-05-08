@@ -126,11 +126,13 @@ class OuraProfile extends Component {
 			await this.updateState( { syncError: false } )
 
 		} catch( e ) {
-			console.log( e )
-			await this.updateState( { syncError: true } )
-			await Dialogue( 'Sync error', 'Check your connection.' )
+
+			await this.updateState( { syncError: true, loading: false } )
+			Dialogue( 'Sync error', `Error: ${e}. Check your connection.` )
+
 			// Throw to sentry
 			throw e
+			
 		}
 	}
 
