@@ -85,8 +85,9 @@ export const getSleep = async ( token, span=0 ) => {
 	if( dev ) console.log( 'Calling ', `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}` )
 
 	const res = await fetch( `${ options.apiEndpoint }/v1/sleep?start=${daysago( span )}&end=${daysago( 0 )}&access_token=${token}`, { method: 'GET' } )
-	const { sleep } = await res.json(  )
-	return sleep
+	const { sleep, code, message } = await res.json(  )
+	if( code && code != 200 ) throw `Oura error ${code}: ${message}`
+	return sleep?.length ? sleep : []
 	
 }
 
@@ -97,22 +98,25 @@ export const resetAuth = f => {
 	] )
 }
 
-const singleSMASet = data => ( {
-	last: data[ data.length - 1 ][ "bedtime_end" ],
-	entries: data.length,
-	hr: propSMA( 'hr_lowest', data ),
-	aHrv: propSMA( 'rmssd', data ),
-	hHrv: highestOfPropSMA( 'rmssd_5min', data ),
-	breath_average: propSMA( 'breath_average', data, true ),
-	temperature_delta: propSMA( 'temperature_delta', data, true ),
-	restlessness: propSMA( 'restless', data ),
-	hr_average: propSMA( 'hr_average', data ),
-	// Midpoint time: rounded to hours
-	midpoint_time: {
-		val: Math.round( propSMA( 'midpoint_time', data ).val / 60 ),
-		sd: Math.round( propSMA( 'midpoint_time', data ).sd / 60 )
+const singleSMASet = ( data ) => {
+	if( !data ) return console.log( 'NO DATA!' )
+	return {
+		last: !data?.length ? 0 : data[ data.length - 1 ][ "bedtime_end" ],
+		entries: !data?.length ? 0 : data.length,
+		hr: propSMA( 'hr_lowest', data ),
+		aHrv: propSMA( 'rmssd', data ),
+		hHrv: highestOfPropSMA( 'rmssd_5min', data ), 
+		breath_average: propSMA( 'breath_average', data, true ),
+		temperature_delta: propSMA( 'temperature_delta', data, true ),
+		restlessness: propSMA( 'restless', data ),
+		hr_average: propSMA( 'hr_average', data ),
+		// Midpoint time: rounded to hours
+		midpoint_time: {
+			val: Math.round( propSMA( 'midpoint_time', data ).val / 60 ),
+			sd: Math.round( propSMA( 'midpoint_time', data ).sd / 60 )
+		}
 	}
-} )
+}
 
 export const getSMAs = async token => {
 
@@ -126,7 +130,7 @@ export const getSMAs = async token => {
 		const week = await getSleep( token, 7 )
 		const month = await getSleep( token, 30 )
 		const semiannum = await getSleep( token, 180 )
-		if( dev ) console.log( 'Got data from oura' )
+		if( dev ) console.log( 'Got data from oura', week.length, month.length, semiannum.length )
 
 		const sma = {
 			day: singleSMASet( [ week[ week.length - 1 ] ] ),

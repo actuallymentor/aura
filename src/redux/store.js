@@ -24,8 +24,9 @@ const metaReducer = ( state, action ) => {
 
 	switch( action.type ) {
 		
-		case "RESETAPP_FULFILLED":
+		case "RESETAPP":
 			state = undefined
+			return undefined
 		break
 
 

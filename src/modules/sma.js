@@ -1,5 +1,8 @@
 // Based on https://www.mathsisfun.com/data/standard-deviation-formulas.html
 const SD = ( series ) => {
+
+	if( !series?.length ) return 0
+
 	const total = series.reduce( ( acc, val ) => acc + val, 0 )
 	const mean = total / series.length
 	const squaredDistancesFromMean = series.map( nr => Math.pow( nr - mean, 2 ) )
@@ -11,6 +14,8 @@ const SD = ( series ) => {
 }
 
 export const highestOfPropSMA = ( prop, sleepData, decimals=false ) => {
+
+	if( !sleepData?.length ) return { val: 0, sd: 0 }
 
 	const series = sleepData.map( day => day[ prop ] ).map( nrs => Math.max( ...nrs ) )
 	const total = series.reduce( ( acc, val ) => acc + val, 0 )
@@ -26,6 +31,8 @@ export const highestOfPropSMA = ( prop, sleepData, decimals=false ) => {
 }
 
 export const propSMA = ( prop, sleepData, decimals=false ) => {
+
+	if( !sleepData?.length ) return { val: 0, sd: 0 }
 
 	const series = sleepData.map( day => day[ prop ] )
 	const total = series.reduce( ( acc, val ) => acc + val, 0 )

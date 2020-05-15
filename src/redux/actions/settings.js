@@ -3,4 +3,7 @@ export const setCompare = baseline => ( {
 	payload: Promise.resolve( baseline )
 } )
 
-export const another = true
+export const resetApp = f => ( {
+	type: 'RESETAPP',
+	payload: true
+} )

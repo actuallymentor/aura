@@ -8,7 +8,7 @@ import { Updates } from 'expo'
 
 // Redux
 import { getToken, getSMAs, reset, getProfile } from '../../redux/actions/oura'
-import { setCompare } from '../../redux/actions/settings'
+import { setCompare, resetApp } from '../../redux/actions/settings'
 import { connect } from 'react-redux'
 
 // Helpers
@@ -71,9 +71,10 @@ class OuraProfile extends Component {
 	async shouldComponentUpdate( nextProps, nextState ) {
 		const { token: oldToken } = this.props
 		const { token: newToken } = nextProps
+		const { syncing } = nextState
 
 		// Unawaited sync trigger
-		if( !oldToken && newToken ) this.updateState( { shouldSync: true } )
+		if( !syncing && !oldToken && newToken ) this.updateState( { shouldSync: true } )
 		// Should update = yes
 		return true
 
@@ -81,11 +82,11 @@ class OuraProfile extends Component {
 
 	async componentDidUpdate( ) {
 
-		const { shouldSync } = this.state
+		const { shouldSync, syncing } = this.state
 		const { sma, dispatch, token } = this.props
 
 		// Only update if there is no data
-		if( shouldSync && token && !sma ) await this.sync( token )
+		if( !syncing && shouldSync && token && !sma ) await this.sync( token )
 			
 	}
 
@@ -128,10 +129,19 @@ class OuraProfile extends Component {
 		} catch( e ) {
 
 			await this.updateState( { syncError: true, loading: false, syncing: false } )
-			Dialogue( 'Sync error', `Error: ${ JSON.stringify( e ) }. Check your connection.` )
 
-			// Throw to sentry
-			throw e
+			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( e ) }. Check your connection.`, [
+				{ text: 'Retry sync', onPress: f => this.sync() },
+				{ text: 'App is stuck, reset it', onPress: f => Promise.all( [
+					dispatch( reset() ),
+					dispatch( resetApp() )
+				] ) },
+				{ text: 'Ignore error', onPress: async f => f }
+			] ).then( f => {
+				throw( e )
+			} )
+
+			
 			
 		}
 	}
@@ -324,8 +334,8 @@ class OuraProfile extends Component {
 }
 
 export default connect( store => ( {
-	token: store.oura && store.oura.token,
-	profile: store.oura && store.oura.profile,
-	sma: store.oura && store.oura.smas,
-	compare: store.settings.compare
+	token: store?.oura?.token,
+	profile: store?.oura?.profile,
+	sma: store?.oura?.smas,
+	compare: store?.settings?.compare
 } ) )( OuraProfile )
