@@ -1,5 +1,5 @@
 // ///////////////////////////////
 // We storage for redux persistence
 // ///////////////////////////////
-import storage from 'redux-persist/lib/storage'
-export default storage
+import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
+export default createSecureStore()

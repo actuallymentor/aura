@@ -1,4 +1,4 @@
-const daysago = days => {
+export const daysago = days => {
 
 	const now = new Date()
 	now.setDate( now.getDate() - days )
@@ -12,4 +12,9 @@ const daysago = days => {
 }
 
 
-export default daysago
+export const daysSinceOura = f => {
+	const foundedIn = new Date( '2013' )
+	const msSinceFounding = Date.now() - foundedIn.getTime()
+	const daysSinceFounding = msSinceFounding / ( 1000 * 60 * 60 * 24 )
+	return daysSinceFounding
+}

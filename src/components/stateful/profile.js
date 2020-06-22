@@ -30,8 +30,8 @@ class OuraProfile extends Component {
 			detailed: false,
 			loading: true,
 			syncError: false,
-			connectionTimeout: 15000,
-			increments: [ 'day', 'week', 'month', 'semiannum' ],
+			connectionTimeout: 30000,
+			increments: [ 'day', 'week', 'month', 'semiannum', 'all' ],
 			normalDeviation: 2,
 			anomalies: [],
 			showAnomalies: false,
@@ -114,14 +114,25 @@ class OuraProfile extends Component {
 				wait( this.state.connectionTimeout, true ),
 				// The data getters, must outrace the timer
 				Promise.all( [
-					dispatch( getSMAs( token ) ),
-					dispatch( getProfile( token ) )
+					dispatch( getSMAs( token ) ).catch( e => {
+						const annotated = { ...e, reason: 'getSMAs errored' }
+						throw e
+					} ),
+					dispatch( getProfile( token ) ).catch( e => {
+						const annotated = { ...e, reason: 'getSMAs errored' }
+						throw e
+					} )
 				] )
 
 			] )
 
 			// If the cata came in, calculate anomalies
-			this.findAnomalies( )
+			try {
+				await this.findAnomalies( )
+			} catch( e ) {
+				const annotated = { ...e, reason: 'findAnomalies errored' }
+				throw e
+			}
 
 			// All went well? Set error to false
 			await this.updateState( { syncError: false } )
@@ -150,7 +161,7 @@ class OuraProfile extends Component {
 
 		const { dispatch, compare } = this.props
 
-		const increments = [ 'day', 'week', 'month', 'semiannum' ]
+		const { increments } = this.state
 		const [ now, baseline ] = compare
 
 		if( !now || !baseline ) return dispatch( setCompare( [ 'day', 'week' ] ) )
@@ -201,7 +212,7 @@ class OuraProfile extends Component {
 		event( 'settings', 'numerator', this.props.compare.now )
 	}
 
-	findAnomalies( ) {
+	async findAnomalies( ) {
 
 		const { normalDeviation } = this.state
 		const { compare, sma } = this.props
@@ -289,9 +300,10 @@ class OuraProfile extends Component {
 	}
 
 	cycleDeviation = async direction => {
+		const increment = .5
 		const { normalDeviation } = this.state
-		if( direction == 'up' ) await this.updateState( { normalDeviation: normalDeviation == 3 ? 0 : normalDeviation + 1 } )
-		else await this.updateState( { normalDeviation: normalDeviation == 0 ? 3 : normalDeviation - 1 } )
+		if( direction == 'up' ) await this.updateState( { normalDeviation: normalDeviation == 3 ? 0 : normalDeviation + increment } )
+		else await this.updateState( { normalDeviation: normalDeviation == 0 ? 3 : normalDeviation - increment } )
 
 		// Update anomaly registry
 		this.findAnomalies( )

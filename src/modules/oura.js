@@ -2,7 +2,7 @@
 import * as AuthSession from 'expo-auth-session'
 import SecureStore from './securestore'
 import { OURA_CLIENTID, OURA_SECRET } from 'react-native-dotenv'
-import daysago from './dates'
+import { daysago, daysSinceOura } from './dates'
 import { highestOfPropSMA, propSMA } from './sma'
 import * as Network from 'expo-network'
 
@@ -130,13 +130,15 @@ export const getSMAs = async token => {
 		const week = await getSleep( token, 7 )
 		const month = await getSleep( token, 30 )
 		const semiannum = await getSleep( token, 180 )
-		if( dev ) console.log( 'Got data from oura', week.length, month.length, semiannum.length )
+		const all = await getSleep( token, daysSinceOura() )
+		if( dev ) console.log( 'Got data from oura', week.length, month.length, semiannum.length, all.length )
 
 		const sma = {
 			day: singleSMASet( [ week[ week.length - 1 ] ] ),
 			week: singleSMASet( week ),
 			month: singleSMASet( month ),
 			semiannum: singleSMASet( semiannum ),
+			all: singleSMASet( all ),
 			synctimestamp: Date.now()
 		}
 
@@ -145,7 +147,8 @@ export const getSMAs = async token => {
 		return sma
 
 	} catch( e ) {
-		throw e
+		console.log( 'Getsma error: ', e )
+		throw `Error retreiving SMAs ${ JSON.stringify( e ) }`
 	}
 	
 }
