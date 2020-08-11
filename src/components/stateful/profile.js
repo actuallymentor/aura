@@ -141,7 +141,7 @@ class OuraProfile extends Component {
 
 			await this.updateState( { syncError: true, loading: false, syncing: false } )
 
-			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( e ) }. Check your connection.`, [
+			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e ) }. Check your connection.`, [
 				{ text: 'Retry sync', onPress: f => this.sync() },
 				{ text: 'App is stuck, reset it', onPress: f => Promise.all( [
 					dispatch( reset() ),

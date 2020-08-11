@@ -3,6 +3,7 @@ import * as AuthSession from 'expo-auth-session'
 import SecureStore from './securestore'
 import { OURA_CLIENTID, OURA_SECRET } from 'react-native-dotenv'
 import { daysago, daysSinceOura } from './dates'
+import { errorToObject } from './helpers'
 import { highestOfPropSMA, propSMA } from './sma'
 import * as Network from 'expo-network'
 
@@ -122,6 +123,8 @@ export const getSMAs = async token => {
 
 	try {
 
+		throw new Error( 'Thing?' )
+
 		// Check for connection
 		const net = await Network.getNetworkStateAsync()
 		if( !net.isInternetReachable ) throw 'No internet'
@@ -148,7 +151,7 @@ export const getSMAs = async token => {
 
 	} catch( e ) {
 		console.log( 'Getsma error: ', e )
-		throw `Error retreiving SMAs ${ JSON.stringify( e ) }`
+		throw `Error retreiving SMAs ${ JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e ) }`
 	}
 	
 }

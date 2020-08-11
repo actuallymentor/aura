@@ -65,3 +65,25 @@ export const Dialogue = ( title, message, options ) => new Promise( res => {
 	Alert.alert( title, message, options )
 
 } )
+
+// ///////////////////////////////
+// Error object parser
+// ///////////////////////////////
+export const errorToObject = content => {
+
+	// It this is not an object just let it through
+	if( typeof content != 'object' ) return content
+
+	// Create placeholder
+	const obj = {}
+
+	// For each property, append to object
+	Object.getOwnPropertyNames( content ).map( key => {
+
+		// If the sub property is also an object, recurse so we destructure it too
+		if( typeof content[key] == 'object' ) obj[key] = errorToObject( content[key] )
+		else return obj[key] = content[key]
+	} )
+
+	return obj
+}
