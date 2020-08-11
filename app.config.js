@@ -1,4 +1,4 @@
-{
+module.exports = {
   "expo": {
     "name": "Oura Trend Dashboard",
     "description": "A trend dashboard for Oura ring data.",
@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "2.0.0",
+    "version": "3.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,28 +23,36 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mentorpalokaj.ouratrenddashboard",
-      "buildNumber": "2.0.0"
+      "buildNumber": "3.0.0"
     },
+
+
     "android": {
       "package": "com.mentorpalokaj.ouratrenddashboard",
-      "versionCode": 2,
-      "permissions": []
+      "versionCode": 3,
+      "permissions": [],
+      icon: "./assets/android_icon_rounded.png",
+      adaptiveIcon: {
+        foregroundImage: "./assets/adaptive_icon.png",
+        backgroundColor: "#ffffff"
+      }
     },
     "scheme": "ouratrenddashboard",
+
+     // Sentry config
     "hooks": {
       "postPublish": [
         {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-  "organization": "mmoh",
-  "project": "ouratrenddashboard",
-  "authToken": "0adc1c8cdb3e462899a2ceba6bde0550c30991a80ec94c129e7fc77ef0c3d3fd"
-}
+          "file": "sentry-expo/upload-sourcemaps"
         }
       ]
-    }
+    },
+
+
   }
 }

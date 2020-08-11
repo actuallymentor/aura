@@ -22,7 +22,7 @@ jobs:
       - name: Cloning repository
         uses: actions/checkout@v1
 
-      - name: installing node 13
+      - name: installing node 14
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
