@@ -123,8 +123,6 @@ export const getSMAs = async token => {
 
 	try {
 
-		throw new Error( 'Thing?' )
-
 		// Check for connection
 		const net = await Network.getNetworkStateAsync()
 		if( !net.isInternetReachable ) throw 'No internet'
