@@ -6,6 +6,7 @@ const SentryInit = f => {
 	  dsn: SENTRY_DSN,
 	  enableInExpoDevelopment: false
 	} )
+	return Sentry
 }
 
 export default SentryInit

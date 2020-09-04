@@ -20,6 +20,7 @@ import generic from '../styles/generic'
 
 // Tracking
 import { pageView, event } from '../../modules/analytics'
+import * as Sentry from 'sentry-expo'
 
 class OuraProfile extends Component {
 
@@ -141,6 +142,8 @@ class OuraProfile extends Component {
 
 			await this.updateState( { syncError: true, loading: false, syncing: false } )
 
+			Sentry.captureException( e )
+
 			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e ) }. Check your connection.`, [
 				{ text: 'Retry sync', onPress: f => this.sync() },
 				{ text: 'App is stuck, reset it', onPress: f => Promise.all( [
@@ -148,9 +151,7 @@ class OuraProfile extends Component {
 					dispatch( resetApp() )
 				] ) },
 				{ text: 'Ignore error', onPress: async f => f }
-			] ).then( f => {
-				throw( e )
-			} )
+			] )
 
 			
 			
