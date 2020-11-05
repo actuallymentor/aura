@@ -65,8 +65,7 @@ const DataCircles = ( { headFont=18, now, then, normalDeviation, cycleDeviation,
 			<DataControls fontSize={ headFont } next={ f => cycleDeviation( 'up' ) } back={ f => cycleDeviation( 'down' ) } current={ normalDeviation } />
 			<Text style={ { fontSize: headFont } }> standard deviations</Text>
 		</View>
-
-		<Text style={ { marginTop: 20, opacity: .5, width: '100%', textAlign: 'center' } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ now ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
+		<Text style={ { marginTop: 20, opacity: .5, width: '100%', textAlign: 'center' } } onPress={ toggleDetail }>Last data: { relativeTime( sma[ 'all' ].last ) }, last sync: { humanTimeFromStamp( sma.synctimestamp ) }</Text>
 
 	</View>
 	

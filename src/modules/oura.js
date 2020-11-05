@@ -101,6 +101,7 @@ export const resetAuth = f => {
 
 const singleSMASet = ( data ) => {
 	if( !data ) return console.log( 'NO DATA!' )
+	console.log( data, data[ data.length - 1 ] )
 	return {
 		last: !data?.length ? 0 : data[ data.length - 1 ][ "bedtime_end" ],
 		entries: !data?.length ? 0 : data.length,
@@ -135,11 +136,11 @@ export const getSMAs = async token => {
 		if( dev ) console.log( 'Got data from oura', week.length, month.length, semiannum.length, all.length )
 
 		const sma = {
-			day: singleSMASet( [ week[ week.length - 1 ] ] ),
-			week: singleSMASet( week ),
-			month: singleSMASet( month ),
-			semiannum: singleSMASet( semiannum ),
-			all: singleSMASet( all ),
+			day: singleSMASet( week.length ? [ week[ week.length - 1 ] ] : [] ),
+			week: singleSMASet( week.length ? week : [] ),
+			month: singleSMASet( month.length ? month : [] ),
+			semiannum: singleSMASet( semiannum.length ? semiannum : [] ),
+			all: singleSMASet( all.length ? all : [] ),
 			synctimestamp: Date.now()
 		}
 

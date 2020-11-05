@@ -37,13 +37,13 @@ export default class App extends React.Component {
 		const web = Platform.OS == 'web'
 		const dev = process.env.NODE_ENV == 'development'
 		if( !web && dev ) {
-			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
+			// await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT_DOWN )
 			await ScreenOrientation.unlockAsync()
 		} else if( !web ) {
 			await ScreenOrientation.lockAsync( ScreenOrientation.Orientation.PORTRAIT )
 		}
 		
-		SentryInit()
+		if( !dev ) SentryInit()
 		
 		// Create and store expo push token
 		// await askForPushPermissions()

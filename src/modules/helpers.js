@@ -2,6 +2,9 @@
 // Helpers
 // ///////////////////////////////
 export const relativeTime = time => {
+
+	if( !time ) return 'a long time ago'
+
 	const day = 1000 * 60 * 60 * 24
 	const date = new Date( time )
 	const now = new Date()

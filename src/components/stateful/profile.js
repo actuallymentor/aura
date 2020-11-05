@@ -87,7 +87,7 @@ class OuraProfile extends Component {
 		const { sma, dispatch, token } = this.props
 
 		// Only update if there is no data
-		if( !syncing && shouldSync && token && !sma ) await this.sync( token )
+		if( !this.syncing && !syncing && shouldSync && token && !sma ) await this.sync( token )
 			
 	}
 
@@ -142,7 +142,9 @@ class OuraProfile extends Component {
 
 			await this.updateState( { syncError: true, loading: false, syncing: false } )
 
-			Sentry.captureException( e )
+			if( process.env.NODE_ENV != 'development' ) Sentry.captureException( e )
+
+			console.log( 'Sync error: ', e )
 
 			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e ) }. Check your connection.`, [
 				{ text: 'Retry sync', onPress: f => this.sync() },
@@ -282,20 +284,30 @@ class OuraProfile extends Component {
 
 	async sync( ) {
 
-		const { token, sma } = this.props
+		try {
 
-		// Sync process running?
-		const { syncing } = this.state
-		console.log( 'Syncing: ', syncing )
-		if( syncing ) return 'Already syncing'
+			this.syncing = true
 
-		// Do the sync
-		await this.updateState( { syncing: true, syncError: false } )
-		
-		await this.getData( token )
+			const { token, sma } = this.props
 
-		await wait( 1000 )
-		await this.updateState( { syncing: false, timeout: false, loading: false } )
+			// Sync process running?
+			const { syncing } = this.state
+			console.log( 'Syncing: ', syncing )
+			if( syncing ) return 'Already syncing'
+
+			// Do the sync
+			await this.updateState( { syncing: true, syncError: false } )
+			
+			await this.getData( token )
+
+			await wait( 1000 )
+			await this.updateState( { syncing: false, timeout: false, loading: false } )
+
+		} catch( e ) {
+			console.log( 'sync error: ', e )
+		} finally {
+			this.syncing = false
+		}
 
 
 	}
