@@ -9,7 +9,7 @@ module.exports = {
       "android",
       "web"
     ],
-    "version": "3.0.0",
+    "version": "3.5.0", // increment
     "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
@@ -28,13 +28,13 @@ module.exports = {
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mentorpalokaj.ouratrenddashboard",
-      "buildNumber": "3.0.0"
+      "buildNumber": "3.5.0" // increment
     },
 
 
     "android": {
       "package": "com.mentorpalokaj.ouratrenddashboard",
-      "versionCode": 3,
+      "versionCode": 4, // increment
       "permissions": [],
       icon: "./assets/android_icon_rounded.png",
       adaptiveIcon: {
