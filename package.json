@@ -41,7 +41,8 @@
     "redux-promise-middleware": "^6.1.2",
     "sentry-expo": "~3.0.3",
     "expo-file-system": "~9.2.0",
-    "expo": "^39.0.0"
+    "expo": "^39.0.0",
+    "expo-updates": "~0.3.3"
   },
   "devDependencies": {
     "expo": "^39.0.4",

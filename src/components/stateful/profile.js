@@ -4,7 +4,7 @@ import { Authentication } from '../stateless/profile'
 import { Table } from '../stateless/data-table'
 import { Dashboard } from '../stateless/data-dashboard'
 import { View, Button } from 'react-native'
-import { Updates } from 'expo'
+import * as Updates from 'expo-updates'
 
 // Redux
 import { getToken, getSMAs, reset, getProfile } from '../../redux/actions/oura'
