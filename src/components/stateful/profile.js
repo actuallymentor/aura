@@ -142,7 +142,7 @@ class OuraProfile extends Component {
 
 			await this.updateState( { syncError: true, loading: false, syncing: false } )
 
-			if( process.env.NODE_ENV != 'development' ) Sentry.captureException( e )
+			if( process.env.NODE_ENV != 'development' ) Sentry.Native.captureException( e )
 
 			console.log( 'Sync error: ', e )
 

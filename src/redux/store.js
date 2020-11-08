@@ -30,8 +30,8 @@ const metaReducer = ( state, action ) => {
 		break
 
 
-		// state = undefined
-		// return undefined
+		state = undefined
+		return undefined
 
 	}
 
