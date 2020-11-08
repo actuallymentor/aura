@@ -23,13 +23,14 @@ export class Component extends React.Component {
 export const Container = ( { children, style } ) => <KeyboardAvoidingView behavior="padding" enabled style={ merge( generic.container, style ) }>{ children }</KeyboardAvoidingView>
 
 // Loading screen
-export const Loading = ( { message, loading=false, onPull, style } ) => <ScrollView
+export const Loading = ( { message, details, loading=false, onPull, style } ) => <ScrollView
 	contentContainerStyle={ merge( generic.centerContent, { flex: 1, paddingTop: 50 }, style ) }
 	style={ { flex: 1 } }
 	refreshControl={ <RefreshControl progressViewOffset={ 50 } title='Loading...' refreshing={ loading } onRefresh={ onPull } /> }
 >
 	<NativeText>
 		{ message || 'Loading' }
+		{ details || '' }
 	</NativeText>
 </ScrollView>
 

@@ -20,7 +20,6 @@ import generic from '../styles/generic'
 
 // Tracking
 import { pageView, event } from '../../modules/analytics'
-import * as Sentry from 'sentry-expo'
 
 class OuraProfile extends Component {
 
@@ -140,13 +139,13 @@ class OuraProfile extends Component {
 
 		} catch( e ) {
 
-			await this.updateState( { syncError: true, loading: false, syncing: false } )
+			const errorMessage = JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e )
 
-			if( process.env.NODE_ENV != 'development' ) Sentry.Native.captureException( e )
+			await this.updateState( { syncError: errorMessage, loading: false, syncing: false } )
 
 			console.log( 'Sync error: ', e )
 
-			await Dialogue( 'Sync error', `Error: ${ JSON.stringify( typeof e == 'object' ? ( e.message || e ) : e ) }. Check your connection.`, [
+			await Dialogue( 'Sync error', `Error: ${ errorMessage }. Check your connection.`, [
 				{ text: 'Retry sync', onPress: f => this.sync() },
 				{ text: 'App is stuck, reset it', onPress: f => Promise.all( [
 					dispatch( reset() ),
@@ -155,7 +154,8 @@ class OuraProfile extends Component {
 				{ text: 'Ignore error', onPress: async f => f }
 			] )
 
-			
+			// Throw to sentry
+			throw e
 			
 		}
 	}
@@ -305,6 +305,7 @@ class OuraProfile extends Component {
 
 		} catch( e ) {
 			console.log( 'sync error: ', e )
+			await this.updateState( { syncError: e.message || e } )
 		} finally {
 			this.syncing = false
 		}
@@ -328,7 +329,7 @@ class OuraProfile extends Component {
 		const { loading, detailed, syncing, syncError, anomalies, showAnomalies, retryAuth, normalDeviation } = this.state
 		const { token, profile, sma, dispatch, compare } = this.props
 
-		if( syncError ) return <Loading message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
+		if( syncError ) return <Loading details={ syncError } message='Sync failed, pull down to retry' onPull={ this.sync } loading={ loading } />
 
 		if( token && ( loading || !compare ) ) return <Loading message='Loading your profile...' />
 		if( !sma && token ) return <Loading message='Accessing oura data' />
