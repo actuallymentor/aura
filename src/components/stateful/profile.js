@@ -104,7 +104,7 @@ class OuraProfile extends Component {
 				if( isAvailable ) {
 					const { isNew } = await Updates.fetchUpdateAsync()
 					await Dialogue( 'An update is available!', 'The app will now reload' )
-					if( isNew ) await Updates.reload()
+					if( isNew ) await Updates.reloadAsync()
 				}
 			}
 

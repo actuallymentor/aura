@@ -9,7 +9,7 @@ module.exports = {
       "android",
       "web"
     ],
-    "version": "3.6.0", // increment
+    "version": "3.6.1", // increment
     "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
