@@ -34,7 +34,7 @@ module.exports = {
 
     "android": {
       "package": "com.mentorpalokaj.ouratrenddashboard",
-      "versionCode": 5, // increment
+      "versionCode": 6, // increment
       "permissions": [],
       icon: "./assets/android_icon_rounded.png",
       adaptiveIcon: {
